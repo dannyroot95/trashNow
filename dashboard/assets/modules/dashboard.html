@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Inicio</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" charset="utf-8"></script>
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh7U0aNiNGd0oLz7CLzdluscfw2ojSnsc&libraries=visualization">
+    </script>
+  
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/style.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href="../css/charts.css">
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src='../js/main.js'></script>
+</head>
+
+<body>
+
+    <div id="loaderDiv" style="display: none;">
+        <center><div style="text-align: center;">
+
+            <img src="../imgs/loader.gif" style="margin-top: -40px;margin-bottom:-60px" width="500px" height="500px">
+            <center><div class="loader" style="margin-top: -40px;"></div></center>
+            <br><label>Obteniendo datos... </label>
+        </div></center>
+     </div> 
+
+     <br><br><br>
+     <center><img src="/dashboard/assets/imgs/banner.png" width="55%"></center>
+     <br><br><br>
+
+    <!-- ======================= Cards ================== -->
+    <div class="cardBox">
+
+        <div class="card">
+            <div>
+                <div class="numbers" id="numCows">-</div>
+                <div class="cardName">Usuarios registrados</div>
+            </div>
+
+            <div class="iconBx">
+                <ion-icon name="accessibility-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers" id="locations">-</div>
+                <div class="cardName">Choferes</div>
+            </div>
+
+            <div class="iconBx">
+                <ion-icon name="person-outline"></ion-icon>
+                </ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers" id="numAreas">-</div>
+                <div class="cardName">Vehículos</div>
+            </div>
+
+            <div class="iconBx">
+                <ion-icon name="car-sport-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers" id="numAreas">-</div>
+                <div class="cardName">N° de Rutas</div>
+            </div>
+
+            <div class="iconBx">
+                <ion-icon name="pin-outline"></ion-icon>
+            </div>
+        </div>
+
+        </div>
+
+     
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+ 
+
+</div>
+
+</body>
+
+</html>
