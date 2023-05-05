@@ -28,9 +28,18 @@
 
 </head>
 
-<body style="padding: 20px;">
+<body>
+
+  <center id="bgspinner" style="display: none;">
+    <div class="swapping-squares-spinner" :style="spinnerStyle">
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+    </div>
+  </center>
   
-  <div id="body">
+  <div id="body" style="padding: 20px;">
 
     <div class="table-responsive">
 
@@ -43,7 +52,6 @@
              <th scope="col">Email</th>
              <th scope="col">Teléfono</th>
              <th scope="col">Tipo</th>
-             <th scope="col"></th>
            </tr>
          </thead>
          <tbody id="tbody">
@@ -53,16 +61,7 @@
      </div>
 
      </div>
- 
 
-  <center id="bgspinner" style="display: none;">
-    <div class="swapping-squares-spinner" :style="spinnerStyle">
-      <div class="square"></div>
-      <div class="square"></div>
-      <div class="square"></div>
-      <div class="square"></div>
-    </div>
-  </center>
 
   <div class="modal fade" id="modalShow" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -80,8 +79,26 @@
           </div>
 
           <div class="input-group mb-3">
+            <span class="input-group-text">Apellidos</span>
+            <input type="text" id="lastname" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
             <span class="input-group-text">Nombres</span>
-            <input type="text" disabled id="fullname" style="background-color: white;text-transform: uppercase;color: black;" 
+            <input type="text" id="fullname" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Teléfono</span>
+            <input type="tel" id="phone" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Email</span>
+            <input type="email" id="email" style="background-color: white;text-transform: uppercase;color: black;" 
             class="form-control" aria-describedby="basic-addon1">
           </div>
 
@@ -107,7 +124,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" onclick="closeAddModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" onclick="saveVehicle()" class="btn btn-success">Guardar</button>
+          <button type="button" onclick="createUser()" class="btn btn-success">Guardar</button>
         </div>
       </div>
     </div>
