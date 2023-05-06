@@ -51,10 +51,12 @@
              <th scope="col">DNI</th>
              <th scope="col">Email</th>
              <th scope="col">Teléfono</th>
+             <th scope="col">N° Licencia</th>
              <th scope="col">Estado</th>
              <th scope="col">Tipo</th>
+             <th scope="col">Placa de vehiculo</th>
+             <th scope="col">Vehiculo</th>
              <th scope="col">Cuenta</th>
-            
            </tr>
          </thead>
          <tbody id="tbody">
@@ -65,12 +67,11 @@
 
      </div>
 
-
   <div class="modal fade" id="modalShow" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Agregar conductor</h5>
           </button>
         </div>
         <div class="modal-body">
@@ -106,14 +107,19 @@
           </div>
 
           <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupSelectType">Tipo de usuario</label>
+            <label class="input-group-text" for="inputGroupSelectType">Tipo de conductor</label>
             <select class="form-select" id="inputGroupSelectType">
               <option value="0" selected disabled>Seleccione...</option>
-              <option value="1">Administrador</option>
-              <option value="2">Editor</option>
+              <option value="1">Co-conductor</option>
+              <option value="2">Conductor</option>
             </select>
           </div>
       
+          <div class="input-group mb-3" id="li-b" style="display: none;">
+            <span class="input-group-text">N° de licencia</span>
+            <input type="tel" id="li" class="form-control" aria-describedby="basic-addon1">
+          </div>
+
           <div class="input-group mb-3">
             <span class="input-group-text">Contraseña</span>
             <input type="password" id="pass" class="form-control" aria-describedby="basic-addon1">
@@ -128,11 +134,42 @@
     </div>
   </div>
 
+  <!-- ======  ======= -->
 
-  <!-- ====== ionicons ======= -->
+  <!-- Modal -->
+<div class="modal fade" id="addVehicle" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Asignar vehiculo a conductor</h5>
+        </div>
+        <div class="modal-body">
+
+            <label style="font-weight: bold;">ID : <label id="id"></label></label>
+            <p></p>
+
+            <center><label style="margin-top: 10px;font-size: 22px;font-weight: bolder;" id="wait">Espere un momento...</label></center>
+            
+            <div class="input-group mb-3" style="display: none;" id="selectV">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelectVehicle">Vehiculo</label>
+                </div>
+                <select style="width: 200px;" class="custom-select" id="inputGroupSelectVehicle">
+                </select>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddVehicle()">Cancelar</button>
+          <button type="button" id="asing" disabled onclick="asing()" class="btn btn-primary">Asignar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======  ======= -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script src="/config.js"></script>
-  <script src="../js/users.js"></script>
+  <script src="../js/drivers.js"></script>
 </body>
 
 </html>

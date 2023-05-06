@@ -55,7 +55,7 @@ function createDatatable(){
     table.columns.adjust().draw();
     document.getElementById("tb-data_filter").style = "margin-bottom:10px;"
     document.getElementById("tb-data_length").style = "margin-bottom:10px;"
-    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-primary">Agregar usuario</button>'
+    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-dark">Agregar usuario</button>'
     $(button).appendTo('#tb-data_length')
 }
 
@@ -86,7 +86,6 @@ function createUser(){
   let lastname = document.getElementById("lastname").value
   let name = document.getElementById("fullname").value
   let type = document.getElementById("inputGroupSelectType").value
-  let lic = document.getElementById("li").value
   let phone = document.getElementById("phone").value
   let password = document.getElementById("pass").value
   let email = document.getElementById("email").value
@@ -100,20 +99,18 @@ function createUser(){
 
     let data = {
       dni : dni,
-      brandCar : null,
-      colorCar : null,
       email : email,
       id : user,
       image : null,
       lastname : lastname,
       name : name,
       phone : phone,
-      plateNumber : null,
       token : "",
-      type : lic
+      type : type,
+      account : 1
     }
 
-    db.collection("Drivers").doc(user).set(data)
+    db.collection("users").doc(user).set(data)
     closeAddModal()
     Swal.fire(
       'Muy bien!',
@@ -142,7 +139,7 @@ function createUser(){
 
 function getUsersFromDatabase(){
 
-  db.collection("Drivers").onSnapshot((querySnapshot) => {
+  db.collection("users").onSnapshot((querySnapshot) => {
 
     let ctx = 0
 
@@ -157,28 +154,39 @@ function getUsersFromDatabase(){
       users
         .map((v) => {
 
+          let status = `<b style="color:green;">Activo<b>`
+          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+    
+          if(v.account == "0"){
+            status = `<b style="color:red;">Eliminado<b>`
+            btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
+          }
+
           let t = v.type
           let x = ""
     
           if(t == "1"){
             x = "Administrador"
           }else{
-            x = "Conductor"
+            x = "Editor"
           }
 
-          ctx++
+          if(v.type != "super_admin"){
+            ctx++
 
-          return `
-          <tr style="cursor: pointer">
-          <td><strong>${ctx}</strong></td>
-          <td>${v.lastname+" "+v.name}</td>
-          <td>${(v.dni)}</td>
-          <td>${v.email}</td>
-          <td>${v.phone}</td>
-          <td>${x}</td>
-          </tr>`;
-       
-         
+            return `
+            <tr style="cursor: pointer">
+            <td><strong>${ctx}</strong></td>
+            <td>${v.lastname+" "+v.name}</td>
+            <td>${(v.dni)}</td>
+            <td>${v.email}</td>
+            <td>${v.phone}</td>
+            <td>${status}</td>
+            <td>${x}</td>
+            <td>${btn}</td>
+            </tr>`;
+          }
+
         })
         .join("")
     );
@@ -204,26 +212,40 @@ function getUsersFromCache(){
   vCache
     .map((v) => {
 
+      let status = `<b style="color:green;">Activo<b>`
+      let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+
+      if(v.account == "0"){
+        status = `<b style="color:red;">Eliminado<b>`
+        btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
+      }
+
       let t = v.type
       let x = ""
 
       if(t == "1"){
         x = "Administrador"
       }else{
-        x = "Conductor"
+        x = "Editor"
       }
 
-      ctx++
+      if(v.type != "super_admin"){
+        ctx++
 
         return `
         <tr style="cursor: pointer">
-        <td><strong>${ctx}</strong></td>
-        <td>${v.lastname+" "+v.name}</td>
-        <td>${(v.dni)}</td>
-        <td>${v.email}</td>
-        <td>${v.phone}</td>
-        <td>${x}</td>
-        </tr>`;
+          <td><strong>${ctx}</strong></td>
+          <td>${v.lastname+" "+v.name}</td>
+          <td>${(v.dni)}</td>
+          <td>${v.email}</td>
+          <td>${v.phone}</td>
+          <td>${status}</td>
+          <td>${x}</td>
+          <td>${btn}</td>
+          </tr>`;
+      }
+
+     
      
     })
     .join("")
@@ -234,4 +256,35 @@ createDatatable()
 document.getElementById("bgspinner").style = "display:none;"
 getUsersFromDatabase() 
 
+}
+
+
+function modalEnable(id){
+  Swal.fire({
+    title: 'Esta seguro de <b style="color:green;">habilitar</b> esta cuenta?',
+    showDenyButton: true,
+    confirmButtonText: 'Si',
+    denyButtonText: `No`,
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      db.collection("users").doc(id).update({account:"1"})
+      Swal.fire('Habilitado')
+    }
+  })
+}
+
+function modalDisable(id){
+  Swal.fire({
+    title: 'Esta seguro de <b style="color:red;">eliminar</b> esta cuenta?',
+    showDenyButton: true,
+    confirmButtonText: 'Si',
+    denyButtonText: `No`,
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      db.collection("users").doc(id).update({account:"0"})
+      Swal.fire('Eliminado!')
+    }
+  })
 }

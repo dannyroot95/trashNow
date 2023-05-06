@@ -22,21 +22,28 @@ function getVehiclesFromDatabase(){
           ...doc.data(),
         }));
 
-        
         $('#tb-data').DataTable().destroy()
         $("#tbody").html(
       vehicles
         .map((v) => {
+
+          let color = `background-color:#EBEBEB;`
+          if(v.color == "2"){
+            color = `background-color:#002005;`
+          }else if(v.color == "3"){
+            color = `background-color:#A98D00;`
+          }
 
           ctx++
 
             return `
             <tr style="cursor: pointer">
             <td><strong>${ctx}</strong></td>
-            <td>${v.placa}</td>
-            <td>${(v.marca).toUpperCase()}</td>
-            <td>${v.color}</td>
+            <td><ion-icon name="card-outline"></ion-icon>&nbsp;${v.placa}</td>
+            <td><ion-icon name="car-outline"></ion-icon>&nbsp;${(v.marca)}</td>
+            <td style="${color}"></td>
             <td>${v.soat}</td>
+            <td><center><button onclick="deleteVehicle('${v.id}')" class="btn btn-danger">Eliminar</button></center></td>
             </tr>`;
          
         })
@@ -64,15 +71,25 @@ function getVehiclesFromCache(){
   vCache
     .map((v) => {
 
+      
+      let color = `background-color:#EBEBEB;`
+      if(v.color == "2"){
+        color = `background-color:#002005;`
+      }else if(v.color == "3"){
+        color = `background-color:#A98D00;`
+      }
+
+
       ctx++
 
         return `
         <tr style="cursor: pointer">
         <td><strong>${ctx}</strong></td>
-        <td>${v.placa}</td>
-        <td>${(v.marca).toUpperCase()}</td>
-        <td>${v.color}</td>
+        <td><ion-icon name="card-outline"></ion-icon>&nbsp;${v.placa}</td>
+        <td><ion-icon name="car-outline"></ion-icon>&nbsp;${(v.marca)}</td>
+        <td style="${color}"></td>
         <td>${v.soat}</td>
+        <td><center><button onclick="deleteVehicle('${v.id}')" class="btn btn-danger">Eliminar</button></center></td>
         </tr>`;
      
     })
@@ -142,7 +159,9 @@ function saveVehicle(){
   if(marca != "" && placa != "" && soat != "" && color != ""){
 
     let x = { id:"" ,marca : marca , placa:placa , soat:soat , obs:obs , color:color}
-    db.collection("vehicles").add(x)
+    db.collection("vehicles").add(x).then(function(docRef) {
+      db.collection("vehicles").doc(docRef.id).update({id:docRef.id})
+  })
     Swal.fire(
       'Muy bien!',
       'Vehículo agregado!',
@@ -166,4 +185,19 @@ function clearInputs(){
   document.getElementById("pl").value = ""
   document.getElementById("so").value = ""
   document.getElementById("ob").value = ""
+}
+
+function deleteVehicle(id){
+
+  db.collection("vehicles").doc(id).delete().then(() => {
+    console.log("Document successfully deleted!");
+}).catch((error) => {
+    console.error("Error removing document: ", error);
+});
+  Swal.fire(
+    'Muy bien!',
+    'Vehiculo eliminado!',
+    'success'
+  )
+
 }

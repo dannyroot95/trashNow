@@ -1,5 +1,4 @@
 
-getReference()
 
 if (user.type == "super_admin") {
   console.log("super admin");
@@ -41,6 +40,18 @@ if (user.type == "super_admin") {
           window.open("#users", "_self");
         </script>
 
+        <li>
+          <a href="#drivers">
+            <span class="icon">
+            <ion-icon name="speedometer-outline"></ion-icon>
+            </span>
+            <span class="title">Conductores</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#drivers", "_self");
+        </script>
+
 
         <li>
           <a href="#vehicles">
@@ -53,7 +64,7 @@ if (user.type == "super_admin") {
         
 
         <li>
-          <a href="#monitoring">
+          <a href="#zones">
             <span class="icon">
             <ion-icon name="compass-outline"></ion-icon>
             </span>
@@ -61,11 +72,11 @@ if (user.type == "super_admin") {
           </a>
         </li>
         <script>;
-          window.open("#monitoring", "_self");
+          window.open("#zones", "_self");
         </script>
 
         <li>
-          <a href="#monitoring">
+          <a href="#routes">
             <span class="icon">
             <ion-icon name="location-outline"></ion-icon>
             </span>
@@ -73,11 +84,11 @@ if (user.type == "super_admin") {
           </a>
         </li>
         <script>;
-          window.open("#monitoring", "_self");
+          window.open("#routes", "_self");
         </script>
 
         <li>
-          <a href="#routes">
+          <a href="#reports">
             <span class="icon">
             <ion-icon name="stats-chart-outline"></ion-icon>
             </span>
@@ -85,7 +96,7 @@ if (user.type == "super_admin") {
           </a>
         </li>
         <script>;
-          window.open("#routes", "_self");
+          window.open("#reports", "_self");
         </script>
 
         <li>
@@ -104,14 +115,7 @@ if (user.type == "super_admin") {
       window.open("#inicio", "_self");
     </script>
 
-        <li>
-          <a href="#" onclick="logout()">
-            <span class="icon">
-              <ion-icon name="log-out-outline"></ion-icon>
-            </span>
-            <span class="title">Cerrar sesión</span>
-          </a>
-        </li>
+     
     `
   );
 } else if (user.type == "operator") {
@@ -194,14 +198,6 @@ if (user.type == "super_admin") {
           </a>
         </li>
 
-        <li>
-          <a href="#" onclick="logout()">
-            <span class="icon">
-              <ion-icon name="log-out-outline"></ion-icon>
-            </span>
-            <span class="title">Cerrar sesión</span>
-          </a>
-        </li>
     `
   );
 } 
@@ -235,15 +231,18 @@ function listaModulos_SA(modulo, contenedor) {
   } else if ("#users" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/users.html");
     document.getElementById("start").innerText = "Usuarios";
+  } else if ("#drivers" == modulo) {
+    contenedor.innerHTML = urlModulo("assets/modules/drivers.html");
+    document.getElementById("start").innerText = "Conductores";
   } else if ("#vehicles" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/vehicles.html");
     document.getElementById("start").innerText = "Vehículos";
-  } else if ("#monitoring" == modulo) {
-    contenedor.innerHTML = urlModulo("assets/modules/monitoring.html");
-    document.getElementById("start").innerText = "Monitoreo";
+  } else if ("#zones" == modulo) {
+    contenedor.innerHTML = urlModulo("assets/modules/zones.html");
+    document.getElementById("start").innerText = "Zonas";
   } else if ("#routes" == modulo) {
-    contenedor.innerHTML = urlModulo("assets/modules/routes.html");
-    document.getElementById("start").innerText = "Rutas";
+    contenedor.innerHTML = urlModulo("assets/modules/microroutes.html");
+    document.getElementById("start").innerText = "Micro-rutas";
   }else if ("#incidents" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/incidents.html");
     document.getElementById("start").innerText = "Incidentes";
@@ -276,15 +275,3 @@ linkModulo.forEach((elemento) => {
 });
 
 
-function getReference(){
- 
-  db.collection("reference").doc("point").get().then((reference) =>{
-
-    if(reference.exists){
-        var point = {lat:reference.data().lat,lng:reference.data().lng,zoom:reference.data().zoom}
-        localStorage.setItem("reference",JSON.stringify(point))
-        console.log(point)
-    }
-
-  })
-}

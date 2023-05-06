@@ -12,9 +12,7 @@ if (localStorage.getItem("user") !== null) {
     } else if (user.type == "operator") {
       typeuser = "Operador";
     }
-    letteruser = Array.from(nameuser)[0];
-    console.log(letteruser);
-    $("#textuser").text(letteruser);
+  
   } else {
     window.location.href = "../../index.html";
   }
