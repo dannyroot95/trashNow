@@ -1,5 +1,11 @@
+var mMicroroutes = ''
+var nMicroroutes = ''
+
 createDatatable()
 getZonesFromDatabase()
+getAllVehicles()
+getAllMicroroutes()
+
 function showAddZone(){
     $('#addZone').modal('show')
   }
@@ -115,3 +121,51 @@ function showAddZone(){
         console.log(error)
     }); 
 }
+
+function selectTurn() {
+    let dTurn = document.getElementById("selectTurn")
+    var turn = document.querySelector('input[name="flexRadioDefault"]:checked').value;
+    if(turn == "MAÑANA"){
+        dTurn.innerHTML = mMicroroutes
+    }else{
+        dTurn.innerHTML = nMicroroutes
+    }
+
+
+  }
+
+
+  function getAllMicroroutes(){
+
+
+    db.collection("microroutes").get().then((snaphot) =>{
+        
+        snaphot.forEach(e => {
+            let turn = e.data().turn
+            if(turn == "M"){
+                mMicroroutes += `<option value="${e.data().name}">${e.data().name}</option>`
+            }else{
+                nMicroroutes += `<option value="${e.data().name}">${e.data().name}</option>`
+            }
+        })
+
+    })
+  }
+
+  function getAllVehicles(){
+
+    let vehicles = document.getElementById("selectVehicles")
+
+    db.collection("vehicles").get().then((snaphot) =>{
+
+        let data = ""
+
+        snaphot.forEach(e => {
+            data += `<option value="${e.data().placa}">${e.data().placa}</option>`
+        });
+
+        vehicles.innerHTML = data
+
+
+    })
+  }

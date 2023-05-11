@@ -29,6 +29,11 @@
     height: 500px;;
   }
 
+  .form-check {
+  display: inline-block;
+  margin-right: 10px; /* Ajusta este valor para separar los checkboxes */
+}
+
    </style>
   
   </head>
@@ -58,68 +63,6 @@
            </tr>
          </thead>
          <tbody id="tbody">
-
-          <tr>
-            <td style="color: red;font-weight: bold;font-size: 18px;"><center><p></p>1</center></td>
-            <td><center><label style="border: 1px solid #145A32;width: 100%;">MRM-1</label></center>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-2</label></center></td>
-            <td><center><label style="border: 1px solid #145A32;width: 100%;">FX-553</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-5431</label></center></td></td>
-            <td><center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center></td></td>
-            <td><center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-            </td>
-          </tr>
-
-            <tr>
-            <td style="color: red;font-weight: bold;font-size: 18px;"><center><br><br>2</center></td>
-            <td>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-1</label></center>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-2</label></center>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-2</label></center>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-2</label></center>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-2</label></center>
-              </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-553</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-5431</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-5431</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-5431</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-5431</label></center>
-            </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-            </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-            </td>
-          </tr>
-         
-          <tr>
-            <td style="color: red;font-weight: bold;font-size: 18px;"><center>3</center></td>
-            <td>
-                <center><label style="border: 1px solid #145A32;width: 100%;">MRM-1</label></center>
-              </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">FX-553</label></center>
-            </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">Lunes, Miercoles, Sabado</label></center>
-            </td>
-            <td>
-              <center><label style="border: 1px solid #145A32;width: 100%;">MAÑANA</label></center>
-            </td>
-          </tr>
-           
          </tbody>
        </table>
      </div>
@@ -135,12 +78,138 @@
       </div>
       <div class="modal-body">
 
-     
+        <h6>Selecione uno ó mas dias de la semana</h6>
+
+        <div class="group-days">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d1">
+            <label class="form-check-label" for="d1">
+              Lunes
+            </label>
+          </div>
+  
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d2">
+            <label class="form-check-label" for="d2">
+              Martes
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d3">
+            <label class="form-check-label" for="d3">
+              Miercoles
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d4">
+            <label class="form-check-label" for="d4">
+              Jueves
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d5">
+            <label class="form-check-label" for="d5">
+              Viernes
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d6">
+            <label class="form-check-label" for="d6">
+              Sabado
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="d7">
+            <label class="form-check-label" for="d7">
+              Domingo
+            </label>
+          </div>
+        </div>
+        <!--days-->
+        <p></p>
+
+        <h6>Selecione un turno</h6>
+
+        <div class="turn">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" value="MAÑANA" onclick="selectTurn()" name="flexRadioDefault" id="t2">
+          <label class="form-check-label" for="t2">
+            MAÑANA
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" value="NOCHE" onclick="selectTurn()" name="flexRadioDefault" id="t2">
+          <label class="form-check-label" for="t2">
+            NOCHE
+          </label>
+        </div>
+        </div>
+
+        <p></p>
+
+        <h6>Selecione un vehículo</h6>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelectVehicles">Placa de vehículo</label>
+          <select class="form-select" id="selectVehicles">
+           
+          </select>
+        </div>
+
+        <p></p>
+
+        <h6>Selecione una microruta</h6>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelectTurn">Microruta</label>
+          <select class="form-select" id="selectTurn">
+          </select>
+        </div>
 
       <div class="input-group">
         <span style="background-color: red;color: white;" class="input-group-text">Descripción</span>
         <textarea class="form-control" id="descript" aria-label="With textarea"></textarea>
       </div>
+
+      <br>
+      <button style="width: 200px;" class="btn btn-dark">Agregar a la tabla</button>
+
+      <br><br><br>
+
+        <center><h5>Tabla de elementos de la zona</h5></center>
+
+        <table class="table table-hover table-bordered display rounded rounded-3 overflow-hidden" id="tb-data">
+          <thead>
+            <tr style="background-color: #047639;color: white;">
+              <th scope="col">#</th>
+              <th scope="col">Microruta</th>
+              <th scope="col">Placa</th>
+              <th scope="col">Días</th>
+              <th scope="col">Turno</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>NOCHE</td>
+            </tr>
+          </tbody>
+        </table>
+      
+        <button style="width: 200px;background-color: #D4AC0D;color: white;border-color:#D4AC0D ;" class="btn btn-success">Guardar zona</button>
+      
+    </div>
+
+   
+
+   <!--Microroutes-->
+    
   
     </div>
   </div>
