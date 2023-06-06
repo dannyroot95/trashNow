@@ -82,49 +82,49 @@
 
         <div class="group-days">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d1">
+            <input class="form-check-input x" type="checkbox" value="" id="d1">
             <label class="form-check-label" for="d1">
               Lunes
             </label>
           </div>
   
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d2">
+            <input class="form-check-input x" type="checkbox" value="" id="d2">
             <label class="form-check-label" for="d2">
               Martes
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d3">
+            <input class="form-check-input x" type="checkbox" value="" id="d3">
             <label class="form-check-label" for="d3">
               Miercoles
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d4">
+            <input class="form-check-input x" type="checkbox" value="" id="d4">
             <label class="form-check-label" for="d4">
               Jueves
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d5">
+            <input class="form-check-input x" type="checkbox" value="" id="d5">
             <label class="form-check-label" for="d5">
               Viernes
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d6">
+            <input class="form-check-input x" type="checkbox" value="" id="d6">
             <label class="form-check-label" for="d6">
               Sabado
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="d7">
+            <input class="form-check-input x" type="checkbox" value="" id="d7">
             <label class="form-check-label" for="d7">
               Domingo
             </label>
@@ -137,13 +137,13 @@
 
         <div class="turn">
         <div class="form-check">
-          <input class="form-check-input" type="radio" value="MAÑANA" onclick="selectTurn()" name="flexRadioDefault" id="t2">
+          <input class="form-check-input y" type="radio" value="MAÑANA" onclick="selectTurn()" name="flexRadioDefault" id="t2">
           <label class="form-check-label" for="t2">
             MAÑANA
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" value="NOCHE" onclick="selectTurn()" name="flexRadioDefault" id="t2">
+          <input class="form-check-input y" type="radio" value="NOCHE" onclick="selectTurn()" name="flexRadioDefault" id="t2">
           <label class="form-check-label" for="t2">
             NOCHE
           </label>
@@ -164,8 +164,8 @@
 
         <h6>Selecione una microruta</h6>
         <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupSelectTurn">Microruta</label>
-          <select class="form-select" id="selectTurn">
+          <label class="input-group-text" for="inputGroupSelectMicroRoute">Microruta</label>
+          <select class="form-select" id="selectMicroRoute">
           </select>
         </div>
 
@@ -175,13 +175,13 @@
       </div>
 
       <br>
-      <button style="width: 200px;" class="btn btn-dark">Agregar a la tabla</button>
+      <button style="width: 200px;" onclick="addToTable()" class="btn btn-dark">Agregar a la tabla</button>
 
       <br><br><br>
 
         <center><h5>Tabla de elementos de la zona</h5></center>
 
-        <table class="table table-hover table-bordered display rounded rounded-3 overflow-hidden" id="tb-data">
+        <table class="table table-hover table-bordered display rounded rounded-3 overflow-hidden" id="tb-data-add">
           <thead>
             <tr style="background-color: #047639;color: white;">
               <th scope="col">#</th>
@@ -189,16 +189,12 @@
               <th scope="col">Placa</th>
               <th scope="col">Días</th>
               <th scope="col">Turno</th>
+              <th scope="col">Descripción</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>NOCHE</td>
-            </tr>
+           
           </tbody>
         </table>
       

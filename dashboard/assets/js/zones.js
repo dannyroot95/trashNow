@@ -137,6 +137,8 @@ function selectTurn() {
 
   function getAllMicroroutes(){
 
+    
+    let mr = document.getElementById("selectMicroRoute")
 
     db.collection("microroutes").get().then((snaphot) =>{
         
@@ -148,6 +150,8 @@ function selectTurn() {
                 nMicroroutes += `<option value="${e.data().name}">${e.data().name}</option>`
             }
         })
+
+        mr.innerHTML = nMicroroutes
 
     })
   }
@@ -168,4 +172,141 @@ function selectTurn() {
 
 
     })
+  }
+
+  function addToTable(){
+    const checkboxes = document.querySelectorAll('.x');
+    const radio = document.querySelectorAll('.y');
+    let days = ""
+    let turn = ""
+  
+    checkboxes.forEach(function(checkbox, index) {
+        if (checkbox.checked) {
+            const diaMarcado = checkbox.nextElementSibling.textContent.trim();
+            days += diaMarcado;
+        
+            if (index < checkboxes.length - 1) {
+              days += ', ';
+            }
+          }
+        });
+        
+        // Eliminar la coma final si solo se seleccionaron dos días
+        if (days.endsWith(', ')) {
+          days = days.slice(0, -2);
+        }
+
+        radio.forEach(function(radio) {
+            if (radio.checked) {
+                const turnoMarcado = radio.nextElementSibling.textContent.trim();
+                turn += turnoMarcado;
+            
+              }
+            });
+            
+            addData()
+        alert(days+" "+turn);
+    
+  }
+
+  function addData(){
+    const tabla = document.getElementById('tb-data-add');
+  const tbody = tabla.getElementsByTagName('tbody')[0];
+
+  // Función para reenumerar los registros en la tabla
+  function reenumerarRegistros() {
+    const filas = tbody.rows;
+    for (let i = 0; i < filas.length; i++) {
+      filas[i].cells[0].textContent = i + 1;
+    }
+  }
+
+  // Función para eliminar una fila de la tabla
+  function eliminarFila(fila) {
+    tbody.removeChild(fila);
+    reenumerarRegistros();
+  }
+
+  function microrutaExistente(microruta) {
+    const filas = tbody.getElementsByTagName('tr');
+    for (let i = 0; i < filas.length; i++) {
+      const microrutaCelda = filas[i].getElementsByTagName('td')[1];
+      if (microrutaCelda.textContent === microruta) {
+        return true; // La microruta ya existe en la tabla
+      }
+    }
+    return false; // La microruta no existe en la tabla
+  }
+
+  // Función para crear una nueva fila con los datos
+  function agregarRegistro(datos) {
+    // Crear una nueva fila
+
+    if (microrutaExistente(datos.microruta)) {
+        alert('La microruta ya existe en la tabla.');
+      }else{
+
+        const nuevaFila = document.createElement('tr');
+
+        // Crear las celdas y asignar los valores
+        const numeroCelda = document.createElement('td');
+        numeroCelda.textContent = tbody.rows.length + 1;
+    
+        const microrutaCelda = document.createElement('td');
+        microrutaCelda.textContent = datos.microruta;
+    
+        const placaCelda = document.createElement('td');
+        placaCelda.textContent = datos.placa;
+    
+        const diasCelda = document.createElement('td');
+        diasCelda.textContent = datos.dias;
+    
+        const turnoCelda = document.createElement('td');
+        turnoCelda.textContent = datos.turno;
+    
+        const descripcionCelda = document.createElement('td');
+        descripcionCelda.textContent = datos.descripcion;
+    
+        const accionesCelda = document.createElement('td');
+    
+        // Crear el botón de eliminar
+        const eliminarBtn = document.createElement('button');
+        eliminarBtn.classList.add('btn', 'btn-danger');
+        eliminarBtn.textContent = 'Eliminar';
+        eliminarBtn.addEventListener('click', function() {
+          eliminarFila(nuevaFila);
+        });
+    
+        // Añadir el botón de eliminar a la celda de acciones
+        accionesCelda.appendChild(eliminarBtn);
+    
+        // Añadir las celdas a la fila
+        nuevaFila.appendChild(numeroCelda);
+        nuevaFila.appendChild(microrutaCelda);
+        nuevaFila.appendChild(placaCelda);
+        nuevaFila.appendChild(diasCelda);
+        nuevaFila.appendChild(turnoCelda);
+        nuevaFila.appendChild(descripcionCelda);
+        nuevaFila.appendChild(accionesCelda);
+    
+        // Añadir la fila al cuerpo de la tabla
+        tbody.appendChild(nuevaFila);
+        
+      }
+
+
+  }
+
+  // Ejemplo de uso
+
+  // Agregar un registro inicial
+  const datosInicial = {
+    microruta: 'MNM-01',
+    placa: 'fx-001',
+    dias: 'lunes, martes',
+    turno: 'mañana',
+    descripcion: 'ninguno'
+  };
+  agregarRegistro(datosInicial);
+
   }
