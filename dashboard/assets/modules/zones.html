@@ -60,6 +60,7 @@
              <th scope="col">Placas</th>
              <th scope="col">Frecuencia de recolección</th>
              <th scope="col">Turno</th>
+             <th></th>
            </tr>
          </thead>
          <tbody id="tbody">
@@ -137,7 +138,7 @@
 
         <div class="turn">
         <div class="form-check">
-          <input class="form-check-input y" type="radio" value="MAÑANA" onclick="selectTurn()" name="flexRadioDefault" id="t2">
+          <input class="form-check-input y" checked type="radio" value="MAÑANA" onclick="selectTurn()" name="flexRadioDefault" id="t2">
           <label class="form-check-label" for="t2">
             MAÑANA
           </label>
@@ -198,7 +199,7 @@
           </tbody>
         </table>
       
-        <button style="width: 200px;background-color: #D4AC0D;color: white;border-color:#D4AC0D ;" class="btn btn-success">Guardar zona</button>
+        <button onclick="saveZone()" style="width: 200px;background-color: #D4AC0D;color: white;border-color:#D4AC0D ;" class="btn btn-success">Guardar zona</button>
       
     </div>
 

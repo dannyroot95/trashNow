@@ -46,6 +46,46 @@
   
   <div id="body" style="padding: 20px;">
 
+    
+<!-- Modal -->
+<div class="modal fade" id="modalAddStreet" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar calles</h5>
+        <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+  
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Nombre de avenida</span>
+          </div>
+          <input id="in-street" style="text-transform: uppercase;" type="text" class="form-control" aria-describedby="basic-addon1">
+          <button type="button" onclick="addStreet()" class="btn btn-primary">Agregar</button>
+        </div>
+
+        
+        <table class="table table-hover table-bordered rounded rounded-3 overflow-hidden" id="tb-data-s">
+          <thead>
+            <tr style="background-color: #047639;color: white;">
+              <th scope="col">#</th>
+              <th scope="col">Avenida</th>
+              <th scope="col" id="th-btn"></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyStreet">
+            
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ======  ======= -->
+
+
     <div class="table-responsive">
 
      <table class="table table-hover table-bordered display rounded rounded-3 overflow-hidden" id="tb-data">
@@ -72,6 +112,7 @@
         <h5 class="modal-title" id="exampleModalLabel">Crear Micro-ruta</h5>
         <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body">
 
         <div class="input-group mb-3" style="width: 60%;">
@@ -83,6 +124,7 @@
           <div class="input-group-prepend">
             <label class="input-group-text" for="inputGroupSelectTurn">Turno</label>
           </div>
+         
           <select class="custom-select" id="inputGroupSelectTurn">
             <option value="0" disabled selected>Seleccione...</option>
             <option value="M">Mañana</option>
@@ -100,13 +142,78 @@
         <span style="background-color: red;color: white;" class="input-group-text">Descripción</span>
         <textarea class="form-control" id="descript" aria-label="With textarea"></textarea>
       </div>
+
+      <br>
+      <center><h2>Cobertura</h2></center>
+      <div class="input-group mb-3" style="width: 100%;">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Calle</span>
+        </div>
+        <select class="custom-select" id="inputGroupSelectStreet">
+        </select>
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Descripción</span>
+        </div>
+        <input id="in-description" style="text-transform: uppercase;" type="text" class="form-control" aria-describedby="basic-addon1">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Distancia</span>
+        </div>
+        <input id="in-distance" style="text-transform: uppercase;" type="number" class="form-control" aria-describedby="basic-addon1">
+        
+      </div>
+
+      <div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio1" checked>
+        <label class="form-check-label" for="radio1">
+          Ruta asignada
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio2">
+        <label class="form-check-label" for="radio2">
+          Punto crítico
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio3">
+        <label class="form-check-label" for="radio3">
+          Punto Inicial
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio4">
+        <label class="form-check-label" for="radio4">
+          Punto final
+        </label>
+      </div>
+    </div>
+ 
+      <button class="btn btn-primary" onclick="addCoverage()">Agregar a la tabla</button>
+
+      <p></p>
+      
+      <table class="table table-hover table-bordered rounded rounded-3 overflow-hidden" id="tb-data-s2">
+        <thead>
+          <tr style="background-color: #047639;color: white;">
+            <th scope="col">#</th>
+            <th scope="col">Avenida</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Distancia</th>
+            <th scope="col">Actividad</th>
+            <th scope="col" id="th2-btn2"></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyStreet2">
+          
+        </tbody>
+      </table>
   
     </div>
   </div>
 </div>
 
 <!-- ======  ======= -->
-
 
      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
      <script src="/config.js"></script>

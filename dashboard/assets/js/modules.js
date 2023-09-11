@@ -62,6 +62,17 @@ if (user.type == "super_admin") {
           </a>
         </li>
         
+        <li>
+          <a href="#sectors">
+            <span class="icon">
+            <ion-icon name="map-outline"></ion-icon>
+            </span>
+            <span class="title">Sectores</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#sectors", "_self");
+        </script>
 
         <li>
           <a href="#zones">
@@ -237,7 +248,11 @@ function listaModulos_SA(modulo, contenedor) {
   } else if ("#vehicles" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/vehicles.html");
     document.getElementById("start").innerText = "Vehículos";
-  } else if ("#zones" == modulo) {
+  }else if ("#sectors" == modulo) {
+    contenedor.innerHTML = urlModulo("assets/modules/sectors.html");
+    document.getElementById("start").innerText = "Sectores";
+  } 
+  else if ("#zones" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/zones.html");
     document.getElementById("start").innerText = "Zonas";
   } else if ("#routes" == modulo) {

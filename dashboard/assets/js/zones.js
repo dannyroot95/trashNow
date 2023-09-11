@@ -1,20 +1,36 @@
 var mMicroroutes = ''
 var nMicroroutes = ''
+const tabla = document.getElementById('tb-data-add');
+const tbody = tabla.getElementsByTagName('tbody')[0];
+document.getElementById("descript").value = "Ninguno"
+var numZone 
+let cacheV = localStorage.getItem("zones")
+let vCache = JSON.parse(cacheV)
 
 createDatatable()
+
+if(vCache == null){
+  document.getElementById("bgspinner").style = "display:block;"
+  getZonesFromDatabase()
+}else{
+  getZonesFromCache()
+}
+
 getZonesFromDatabase()
 getAllVehicles()
 getAllMicroroutes()
+
+
 
 function showAddZone(){
     $('#addZone').modal('show')
   }
   
-  function closeAddZone(){
+function closeAddZone(){
     $('#addZone').modal('hide')
   }
 
-  function createDatatable(){
+function createDatatable(){
 
     $('#tb-data').DataTable({
         language: {
@@ -49,25 +65,18 @@ function showAddZone(){
       $(button).appendTo('#tb-data_length')
   }
 
-  function getZonesFromDatabase(){
+  function getZonesFromCache(){
 
-    db.collection("zones").onSnapshot((querySnapshot) => {
-
-        let ctx = 0
-    
-          zones = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-    
-            $('#tb-data').DataTable().destroy()
+    $('#tb-data').DataTable().destroy()
             $("#tbody").html(
 
-        zones.map((v) => {
+      vCache.map((v) => {
     
+          numZone++
+
             let microroutes = ""
             let plates = ""
-            let frecuency = ""
+            let frequency = ""
             let turn = ""
             let space = ""
 
@@ -91,9 +100,9 @@ function showAddZone(){
                 plates += data;
             }
 
-            for(let k = 0 ; k<v.frecuency.length ; k++){
-                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frecuency[k]}</label></center>`
-                frecuency += data;
+            for(let k = 0 ; k<v.frequency.length ; k++){
+                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frequency[k]}</label></center>`
+                frequency += data;
             }
 
             for(let m = 0 ; m<v.turn.length ; m++){
@@ -106,8 +115,9 @@ function showAddZone(){
                 <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
                 <td>${microroutes}</td>
                 <td>${plates}</td>
-                <td>${frecuency}</td>
+                <td>${frequency}</td>
                 <td>${turn}</td>
+                <td><center><button class="btn btn-danger" onclick="deleteZone('${v.id}')">Eliminar</button></center></td>
                 </tr>`;
              
             })
@@ -116,23 +126,106 @@ function showAddZone(){
     
         //console.log(students)
         createDatatable()
-               
-      }, (error) => {
-        console.log(error)
-    }); 
+        document.getElementById("bgspinner").style = "display:none;"             
+    
+}
+
+function getZonesFromDatabase(){
+
+  db.collection("zones").onSnapshot((querySnapshot) => {
+
+    numZone = 0
+
+        zones = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+  
+          $('#tb-data').DataTable().destroy()
+          $("#tbody").html(
+
+      zones.map((v) => {
+  
+        numZone++
+
+          let microroutes = ""
+          let plates = ""
+          let frequency = ""
+          let turn = ""
+          let space = ""
+
+          if(v.microroutes.length == 1){
+              space=""
+          }else if(v.microroutes.length == 2){
+              space="<p></p>"
+          }else if(v.microroutes.length == 3 && v.microroutes.length <5){
+              space="<br>"
+          }else if(v.microroutes.length >= 5){
+              space="<br><br>"
+          }
+
+          for(let i = 0 ; i<v.microroutes.length ; i++){
+              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.microroutes[i]}</label></center>`
+              microroutes += data;
+          }
+
+          for(let j = 0 ; j<v.plates.length ; j++){
+              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.plates[j]}</label></center>`
+              plates += data;
+          }
+
+          for(let k = 0 ; k<v.frequency.length ; k++){
+              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frequency[k]}</label></center>`
+              frequency += data;
+          }
+
+          for(let m = 0 ; m<v.turn.length ; m++){
+              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.turn[m]}</label></center>`
+              turn += data;
+          }
+  
+              return `
+              <tr style="cursor: pointer">
+              <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
+              <td>${microroutes}</td>
+              <td>${plates}</td>
+              <td>${frequency}</td>
+              <td>${turn}</td>
+              <td><center><button class="btn btn-danger" onclick="deleteZone('${v.id}')">Eliminar</button></center></td>
+              </tr>`;
+           
+          })
+          .join("")
+      );
+  
+      //console.log(students)
+      createDatatable()
+      localStorage.setItem("zones",JSON.stringify(zones))
+      document.getElementById("bgspinner").style = "display:none;"     
+             
+    }, (error) => {
+      console.log(error)
+  }); 
 }
 
 function selectTurn() {
-    let dTurn = document.getElementById("selectTurn")
+    let dTurn = document.getElementById("selectMicroRoute")
     var turn = document.querySelector('input[name="flexRadioDefault"]:checked').value;
     if(turn == "MAÑANA"){
         dTurn.innerHTML = mMicroroutes
     }else{
         dTurn.innerHTML = nMicroroutes
     }
-
-
   }
+
+function deleteZone(id){
+  db.collection("zones").doc(id).delete()
+  Swal.fire(
+    'Muy bien!',
+    'La zona ha sido eliminada!',
+    'success'
+  )
+}  
 
 
   function getAllMicroroutes(){
@@ -146,12 +239,12 @@ function selectTurn() {
             let turn = e.data().turn
             if(turn == "M"){
                 mMicroroutes += `<option value="${e.data().name}">${e.data().name}</option>`
-            }else{
+            }else if(turn == "N"){
                 nMicroroutes += `<option value="${e.data().name}">${e.data().name}</option>`
             }
         })
 
-        mr.innerHTML = nMicroroutes
+        mr.innerHTML = mMicroroutes
 
     })
   }
@@ -177,6 +270,9 @@ function selectTurn() {
   function addToTable(){
     const checkboxes = document.querySelectorAll('.x');
     const radio = document.querySelectorAll('.y');
+    const microroute = document.getElementById("selectMicroRoute").value
+    const plate = document.getElementById("selectVehicles").value
+    const descripcion = document.getElementById("descript").value
     let days = ""
     let turn = ""
   
@@ -204,16 +300,34 @@ function selectTurn() {
               }
             });
             
-            addData()
-        alert(days+" "+turn);
+      if(days != "" && turn != ""){
+        addData(days,turn,plate,microroute,descripcion)
+      }else{
+        Swal.fire(
+          'Oops!',
+          'Complete los campos!',
+          'info'
+        )
+      }      
+            
+        
     
   }
 
-  function addData(){
-    const tabla = document.getElementById('tb-data-add');
-  const tbody = tabla.getElementsByTagName('tbody')[0];
+  function addData(days,turn,plate,mr,descripcion){
+  
+  const datosInicial = {
+    microruta: mr,
+    placa: plate,
+    dias: days,
+    turno: turn,
+    descripcion: descripcion
+  };
 
-  // Función para reenumerar los registros en la tabla
+  agregarRegistro(datosInicial);
+
+  }
+
   function reenumerarRegistros() {
     const filas = tbody.rows;
     for (let i = 0; i < filas.length; i++) {
@@ -227,6 +341,7 @@ function selectTurn() {
     reenumerarRegistros();
   }
 
+  
   function microrutaExistente(microruta) {
     const filas = tbody.getElementsByTagName('tr');
     for (let i = 0; i < filas.length; i++) {
@@ -238,12 +353,15 @@ function selectTurn() {
     return false; // La microruta no existe en la tabla
   }
 
-  // Función para crear una nueva fila con los datos
   function agregarRegistro(datos) {
     // Crear una nueva fila
 
     if (microrutaExistente(datos.microruta)) {
-        alert('La microruta ya existe en la tabla.');
+        Swal.fire(
+          'Oops!',
+          'La microruta ya existe en la tabla!',
+          'info'
+        )
       }else{
 
         const nuevaFila = document.createElement('tr');
@@ -297,16 +415,58 @@ function selectTurn() {
 
   }
 
-  // Ejemplo de uso
+  function saveZone(){
+      // Obtener la referencia a la tabla
+  var table = document.getElementById("tb-data-add");
 
-  // Agregar un registro inicial
-  const datosInicial = {
-    microruta: 'MNM-01',
-    placa: 'fx-001',
-    dias: 'lunes, martes',
-    turno: 'mañana',
-    descripcion: 'ninguno'
-  };
-  agregarRegistro(datosInicial);
+  // Crear los arrays para almacenar los datos
+  var frequency = [];
+  var microroutes = [];
+  var plates = [];
+  var turn = [];
 
+  // Obtener las filas de la tabla (excluyendo la fila de encabezado)
+  var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+  // Recorrer las filas de la tabla
+  for (var i = 0; i < rows.length; i++) {
+    var cells = rows[i].getElementsByTagName("td");
+    // Obtener los valores de las celdas y agregarlos a los arrays correspondientes
+    microroutes.push(cells[1].textContent);
+    plates.push(cells[2].textContent);
+    frequency.push(cells[3].textContent);
+    turn.push(cells[4].textContent);
   }
+
+
+  let data = {
+    frequency:frequency,
+    microroutes:microroutes,
+    plates:plates,
+    turn:turn,
+    number:numZone+1
+  }
+
+  if(frequency.length != 0){
+    db.collection("zones").add(data).then(function(docRef) {
+      db.collection("zones").doc(docRef.id).update({id:docRef.id})
+  })
+  
+  Swal.fire(
+    'Muy bien!',
+    'Se ha creado la zona!',
+    'success'
+  )
+  
+  $('#addZone').modal('hide')
+  }else{
+    Swal.fire(
+      'Oops!',
+      'Complete los campos!',
+      'info'
+    )
+  }
+
+ 
+
+}
