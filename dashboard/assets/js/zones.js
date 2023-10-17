@@ -19,7 +19,7 @@ if(vCache == null){
 getZonesFromDatabase()
 getAllVehicles()
 getAllMicroroutes()
-
+getSectors()
 
 
 function showAddZone(){
@@ -113,6 +113,7 @@ function createDatatable(){
                 return `
                 <tr style="cursor: pointer">
                 <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
+                <td><center>${v.sectors}</center></td>
                 <td>${microroutes}</td>
                 <td>${plates}</td>
                 <td>${frequency}</td>
@@ -187,6 +188,7 @@ function getZonesFromDatabase(){
               return `
               <tr style="cursor: pointer">
               <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
+              <td><center>${v.sectors}</center></td>
               <td>${microroutes}</td>
               <td>${plates}</td>
               <td>${frequency}</td>
@@ -260,10 +262,7 @@ function deleteZone(id){
         snaphot.forEach(e => {
             data += `<option value="${e.data().placa}">${e.data().placa}</option>`
         });
-
         vehicles.innerHTML = data
-
-
     })
   }
 
@@ -273,6 +272,7 @@ function deleteZone(id){
     const microroute = document.getElementById("selectMicroRoute").value
     const plate = document.getElementById("selectVehicles").value
     const descripcion = document.getElementById("descript").value
+    const selectedDataSector = getSelectedData()
     let days = ""
     let turn = ""
   
@@ -300,8 +300,8 @@ function deleteZone(id){
               }
             });
             
-      if(days != "" && turn != ""){
-        addData(days,turn,plate,microroute,descripcion)
+      if(days != "" && turn != "" && selectedDataSector != ""){
+        addData(days,turn,plate,microroute,descripcion,selectedDataSector)
       }else{
         Swal.fire(
           'Oops!',
@@ -309,19 +309,17 @@ function deleteZone(id){
           'info'
         )
       }      
-            
-        
-    
   }
 
-  function addData(days,turn,plate,mr,descripcion){
+  function addData(days,turn,plate,mr,descripcion,sectors){
   
   const datosInicial = {
     microruta: mr,
     placa: plate,
     dias: days,
     turno: turn,
-    descripcion: descripcion
+    descripcion: descripcion,
+    sectors:sectors
   };
 
   agregarRegistro(datosInicial);
@@ -369,6 +367,9 @@ function deleteZone(id){
         // Crear las celdas y asignar los valores
         const numeroCelda = document.createElement('td');
         numeroCelda.textContent = tbody.rows.length + 1;
+
+        const sectorCelda = document.createElement('td');
+        sectorCelda.textContent = datos.sectors;
     
         const microrutaCelda = document.createElement('td');
         microrutaCelda.textContent = datos.microruta;
@@ -400,6 +401,7 @@ function deleteZone(id){
     
         // Añadir las celdas a la fila
         nuevaFila.appendChild(numeroCelda);
+        nuevaFila.appendChild(sectorCelda);
         nuevaFila.appendChild(microrutaCelda);
         nuevaFila.appendChild(placaCelda);
         nuevaFila.appendChild(diasCelda);
@@ -420,6 +422,7 @@ function deleteZone(id){
   var table = document.getElementById("tb-data-add");
 
   // Crear los arrays para almacenar los datos
+  var sectors = [];
   var frequency = [];
   var microroutes = [];
   var plates = [];
@@ -432,14 +435,16 @@ function deleteZone(id){
   for (var i = 0; i < rows.length; i++) {
     var cells = rows[i].getElementsByTagName("td");
     // Obtener los valores de las celdas y agregarlos a los arrays correspondientes
-    microroutes.push(cells[1].textContent);
-    plates.push(cells[2].textContent);
-    frequency.push(cells[3].textContent);
-    turn.push(cells[4].textContent);
+    sectors.push(cells[1].textContent);
+    microroutes.push(cells[2].textContent);
+    plates.push(cells[3].textContent);
+    frequency.push(cells[4].textContent);
+    turn.push(cells[5].textContent);
   }
 
 
   let data = {
+    sectors:sectors,
     frequency:frequency,
     microroutes:microroutes,
     plates:plates,
@@ -466,7 +471,51 @@ function deleteZone(id){
       'info'
     )
   }
+}
 
- 
+function getSectors() {
+  const divTag = document.getElementById('divTag');
 
+  db.collection("sectors").get().then((snapshot) => {
+    snapshot.forEach(e => {
+      let tag = e.data().label;
+
+      // Crear un elemento de div para el checkbox
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.classList.add('form-check');
+
+      // Crear el elemento del checkbox
+      const checkboxInput = document.createElement('input');
+      checkboxInput.classList.add('form-check-input');
+      checkboxInput.type = 'checkbox';
+      checkboxInput.value = tag;
+      checkboxInput.id = `checkbox_${tag}`;
+
+      // Crear la etiqueta (label) para el checkbox
+      const label = document.createElement('label');
+      label.classList.add('form-check-label');
+      label.htmlFor = `checkbox_${tag}`;
+      label.appendChild(document.createTextNode(tag));
+
+      // Agregar el checkbox y su etiqueta al divTag
+      checkboxDiv.appendChild(checkboxInput);
+      checkboxDiv.appendChild(label);
+
+      divTag.appendChild(checkboxDiv);
+    });
+  });
+}
+
+function getSelectedData() {
+  const selectedCheckboxes = document.querySelectorAll('#divTag .form-check-input:checked');
+  const selectedDataArray = [];
+
+  selectedCheckboxes.forEach(checkbox => {
+    selectedDataArray.push(checkbox.value);
+  });
+
+  // Convierte el array en un string separado por comas
+  const selectedDataString = selectedDataArray.join(',');
+
+  return selectedDataString;
 }

@@ -381,6 +381,11 @@ function getRoutesFromDatabase(){
             <td>${v.name}</td>
             <td>${v.turn}</td>
             <td>${des}</td>
+            <td><center><button onclick="showDetails('${encodeURIComponent(JSON.stringify(v))}')" class="btn btn-success">
+            <ion-icon name="eye"></ion-icon></button>&nbsp;
+            <button class="btn btn-danger"
+            onclick="deleteMicroroute('${v.id}')"><ion-icon name="trash-sharp"></ion-icon></button></center>
+            </td>
             </tr>`;
          
         })
@@ -422,6 +427,11 @@ function getRoutesFromCache(){
         <td>${v.name}</td>
         <td>${v.turn}</td>
         <td>${des}</td>
+        <td><center><button onclick="showDetails('${encodeURIComponent(JSON.stringify(v))}')" class="btn btn-success">
+        <ion-icon name="eye"></ion-icon></button>&nbsp;
+        <button class="btn btn-danger"
+        onclick="deleteMicroroute('${v.id}')"><ion-icon name="trash-sharp"></ion-icon></button></center>
+        </td>
         </tr>`;
      
     })
@@ -605,4 +615,68 @@ function dataCoverage(){
   console.log(data)
 
   return data;
+}
+
+function deleteMicroroute(id){
+  db.collection("microroutes").doc(id).delete()
+  Swal.fire(
+    'Muy bien!',
+    'Micro-ruta eliminada!',
+    'success'
+  )
+}  
+
+function showDetails(data) {
+  data = JSON.parse(decodeURIComponent(data));
+  const modal = new bootstrap.Modal(document.getElementById('modalDetail'));
+  const modalContent = document.getElementById('map2');
+
+  // Limpia el contenido anterior si lo hubiera
+  modalContent.innerHTML = '';
+
+  const mapElement = document.createElement('div');
+  mapElement.id = 'map2';
+  mapElement.style.height = '400px'; // Ajusta la altura del mapa según tus necesidades
+  modalContent.appendChild(mapElement);
+
+  // Abre el modal
+  modal.show();
+
+  // Crea un mapa de Google
+  const map = new google.maps.Map(mapElement, {
+    center: { lat: data.positions[0].lat, lng: data.positions[0].lng }, // Centra el mapa en la primera ubicación
+    zoom: 15 // Define el nivel de zoom
+  });
+
+  // Agrega marcadores en las ubicaciones
+  const markers = data.positions.map(position => new google.maps.Marker({
+    position: { lat: position.lat, lng: position.lng },
+    map: map
+  }));
+
+  // Dibuja una línea recta que conecta los marcadores
+  const pathCoordinates = data.positions.map(position => new google.maps.LatLng(position.lat, position.lng));
+  const path = new google.maps.Polyline({
+    path: pathCoordinates,
+    geodesic: true,
+    strokeColor: '#FF0000', // Color de la línea
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+
+  path.setMap(map);
+
+  // Llena la tabla de cobertura
+  const tbodyCoverage = document.getElementById('tbodyCoverage');
+  tbodyCoverage.innerHTML = '';
+  data.coverage.forEach((item, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <th scope="row">${index + 1}</th>
+      <td>${item.activity}</td>
+      <td>${item.avenue}</td>
+      <td>${item.distance}</td>
+    `;
+    tbodyCoverage.appendChild(row);
+  });
 }
