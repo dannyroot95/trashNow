@@ -99,16 +99,16 @@ if (user.type == "super_admin") {
         </script>
 
         <li>
-          <a href="#reports">
-            <span class="icon">
-            <ion-icon name="stats-chart-outline"></ion-icon>
-            </span>
-            <span class="title">Reportes</span>
-          </a>
-        </li>
-        <script>;
-          window.open("#reports", "_self");
-        </script>
+        <a href="#monitoring">
+          <span class="icon">
+          <ion-icon name="aperture"></ion-icon>
+          </span>
+          <span class="title">Monitoreo</span>
+        </a>
+      </li>
+      <script>;
+        window.open("#monitoring", "_self");
+      </script>
 
         <li>
         <a href="#incidents">
@@ -171,43 +171,16 @@ if (user.type == "super_admin") {
 
 
         <li>
-          <a href="#branchs">
-            <span class="icon">
-            <ion-icon name="apps-outline"></ion-icon>
-            </span>
-            <span class="title">Area de pastoreo</span>
-          </a>
-        </li>
-
-        <li>
-          <a href="#transfers">
-            <span class="icon">
-            <ion-icon name="locate-outline"></ion-icon>
-            </span>
-            <span class="title">Monitoreo</span>
-          </a>
-        </li>
-        <script>;
-          window.open("#transfers", "_self");
-        </script>
-
-        <li>
-          <a href="#checkout">
-            <span class="icon">
-            <ion-icon name="git-branch-outline"></ion-icon>
-            </span>
-            <span class="title">Rutas</span>
-          </a>
-        </li>
-
-        <li>
-          <a href="#reports">
-            <span class="icon">
-              <ion-icon name="bar-chart-outline"></ion-icon>
-            </span>
-            <span class="title">Reportes</span>
-          </a>
-        </li>
+        <a href="#monitoring">
+          <span class="icon">
+          <ion-icon name="location-outline"></ion-icon>
+          </span>
+          <span class="title">Monitoreo</span>
+        </a>
+      </li>
+      <script>;
+        window.open("#monitoring", "_self");
+      </script>
 
     `
   );
@@ -261,6 +234,9 @@ function listaModulos_SA(modulo, contenedor) {
   }else if ("#incidents" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/incidents.html");
     document.getElementById("start").innerText = "Incidentes";
+  }else if ("#monitoring" == modulo) {
+    contenedor.innerHTML = urlModulo("assets/modules/monitoring.html");
+    document.getElementById("start").innerText = "Monitoreo";
   }else if ("#reports" == modulo) {
     contenedor.innerHTML = urlModulo("assets/modules/reports.html");
     document.getElementById("start").innerText = "Reportes";

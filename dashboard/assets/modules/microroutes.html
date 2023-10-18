@@ -18,7 +18,9 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
    <script src="/main.js"></script>
    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh7U0aNiNGd0oLz7CLzdluscfw2ojSnsc"></script>
-
+   <script src="../js/tableJS/jspdf.min.js"></script>
+   <script src="../js/tableJS/jspdf.plugin.autotable.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
    <style>
     .modal-backdrop {
@@ -56,8 +58,12 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Detalle de Micro-Ruta</h5>
+        <h5 style="width: 100%;" class="modal-title" id="nameMR"></h5>
+        
+        <button onclick="printer()" class="btn btn-primary"><ion-icon name="print"></ion-icon></button>
+        &nbsp;&nbsp;
         <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        
       </div>
       <div class="modal-body">
 

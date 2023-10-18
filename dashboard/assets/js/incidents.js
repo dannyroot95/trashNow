@@ -1,22 +1,12 @@
 
-var firebaseConfig = {
-    apiKey: "AIzaSyC1rPBlZGVhDoca5IRkQYMOPsEJU_lKi5Q",
-    authDomain: "cowiot.firebaseapp.com",
-    databaseURL: "https://cowiot-default-rtdb.firebaseio.com",
-    projectId: "cowiot",
-    storageBucket: "cowiot.appspot.com",
-    messagingSenderId: "359413020575",
-    appId: "1:359413020575:web:2e64e053c12b4794d1afaa"
-  };
-  
-  firebase.initializeApp(firebaseConfig);
-  let db = firebase.firestore();
-  var incidents = []
-  var arrayInc = []
 
+  let report = []
   allIncidents()
 
   function allIncidents(){
+
+    document.getElementById("bgspinner").style = "display:block;"
+    report = []
 
     db.collection("incidents").onSnapshot((snapshot) => {
 
@@ -31,51 +21,72 @@ var firebaseConfig = {
             incidents
               .map((file) => {
 
-                var gender = file.gender
-                if(gender == "male"){
-                  gender = "MACHO"
-                }else{
-                  gender = "HEMBRA"
+                let data = {
+                  "Nombre del conductor":file.user,
+                  "DNI":file.dni,
+                  "Teléfono":file.phone,
+                  "Placa de vehículo":file.plate,
+                  "Referencia de incidente":file.reference,
+                  "Fecha":onlyDateNumber(file.date*1000)+" "+onlyHour(file.date*1000),
+                  "Latitud":file.latitude,
+                  "Longitud":file.longitude
                 }
+                report.push(data)
 
                 ctx++
-                arrayInc.push([ctx,onlyDateNumber(file.date),onlyHour(file.date),file.cow,file.user,file.signs,gender])
-                $("#cowsSpinner").hide();
                 return `
-                  <tr>
-                    <td class="dnirow" scope='row' style='padding: 20px'>
-                      ${ctx}
-                    </td>
-                    <td>
-                    ${onlyDateNumber(file.date)}
-                    </td>
-                    <td>
-                    ${onlyHour(file.date)}
-                    </td>
-                    <td>
-                    <div class="div-typeuser"> 
-                    ${file.user}
-                    </div>
-                    </td>
-                    <td>
-                    ${"Vaca N°"+file.cow}</b>
-                    </td>
-                      <td>
-                    <button 
-                    class="btnOptionConfig animate__animated animate__bounceIn"
-                    onclick="setData('${file.cow}', '${file.date}', '${file.description}', '${file.gender}', '${file.lat}', '${file.lng}', '${file.user}')">
-                    <ion-icon name="eye-outline" size="large"></ion-icon>
-                      </button>
-                    </td>
-                  </tr>`;
+                <tr>
+                <td>${ctx}</td>
+                <td>${file.user}</td>
+                <td>${file.dni}</td>
+                <td>${file.phone}</td>
+                <td>${file.plate}</td>
+                <td>${file.reference}</td>
+                <td>${onlyDateNumber(file.date*1000)+" "+onlyHour(file.date*1000)}</td>
+                <td><center><button onclick="showModalDetail(${file.latitude},${file.longitude})" class="btn btn-danger"><ion-icon name="location"></ion-icon>&nbsp;Ver ubicación</button></center></td>
+                </tr>
+                `;
               })
               .join("")
           );
-       document.getElementById("btn-print").style = "display: block;background: #014581;color: #fff;"
+          createDatatable()
+          document.getElementById("bgspinner").style = "display:none;"
     })
 
   }
 
+  function createDatatable(){
+
+    $('#tb-incident').DataTable({
+        language: {
+              "decimal": "",
+              "emptyTable": "No hay información",
+              "info": "Mostrando _START_ a _END_ de _TOTAL_ datos",
+              "infoEmpty": "<b>Mostrando 0 to 0 of 0 datos</b>",
+              "infoFiltered": "(Filtrado de _MAX_ total datos)",
+              "infoPostFix": "",
+              "thousands": ",",
+              "lengthMenu": "Mostrar _MENU_ datos",
+              "loadingRecords": "Cargando...",
+              "processing": "Procesando...",
+              "search": "Buscar en la lista: ",
+              "zeroRecords": "Sin resultados encontrados",
+              "paginate": {
+                  "first": "Primero",
+                  "last": "Ultimo",
+                  "next": "Siguiente",
+                  "previous": "Anterior"
+              }
+       },scrollY: '50vh',scrollX: true, sScrollXInner: "100%",
+       scrollCollapse: true,
+      });
+  
+      var table = $('#tb-data').DataTable();
+      $('#container').css( 'display', 'block' );
+      table.columns.adjust().draw();
+      let button = '<button style="margin-bottom:8px;margin-left:8px;" class="btn btn-success" onclick="exportToExcel()" id="btn-report"><ion-icon name="document"></ion-icon>&nbsp;Generar reporte</button>'
+      $(button).appendTo('#tb-incident_length')
+  }
 
   function onlyDateNumber(UNIX_timestamp){
     var a = new Date(UNIX_timestamp);
@@ -116,74 +127,49 @@ var firebaseConfig = {
     return time;
   }
 
-  function setData(cow, date, description, gender, lat , lng , user) {
-
-    var genderX = ""
-
-    if(gender == "male"){
-      genderX = "Macho"
-    }else{genderX = "Hembra"}
-
-    MicroModal.show("modal-1");
-    document.getElementById("date-register").innerHTML = onlyDateNumber(parseInt(date))
-    document.getElementById("id-cow").innerHTML = '#'+cow
-    document.getElementById("gender-cow").innerHTML = genderX
-    window.initMap = initMap(lat,lng)
-    document.getElementById("description").value = description
-    document.getElementById("register_by").innerHTML = user
-  }
 
 
+  function exportToExcel(){
 
-  function initMap(lat,lon) {
-    const myLatLng = { lat: parseFloat(lat), lng: parseFloat(lon) };
-    const map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 16,
-      center: myLatLng,
-    });
-  
-    new google.maps.Marker({
-      position: myLatLng,
-      map,
-      title: "Hello World!",
-    });
-  }
-  
-  
-  function printData(){
 
     Swal.fire({
-      title: 'En breves se descargará el archivo!',
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading()
-      },
-    })
-    
-
-    var doc = new jspdf.jsPDF()
-    doc.setFontSize(26)
-    doc.text(30, 16, "Cow Manager")
-    doc.setFontSize(8)
-    doc.text(30, 22, "Fecha de generacion del reporte de incidentes : "+onlyDateNumber(Date.now()))
-    doc.setFontSize(9)
-    doc.text(155, 14, "RUC : "+"121212121212")
-    doc.text(155, 19, "Direccion : "+"Jr.Los girasoles Mz6 L9")
-    doc.text(155, 24, "Teléfono : "+"+51989280394")
-	  doc.setFontSize(12)
-	  doc.addImage('/dashboard/assets/imgs/cowlogo.png', 'JPEG', 7, 2, 20, 20)
-      doc.autoTable({
-      head: [['#','Fecha de incidente','Hora','ID Vaca','Reportado por','Signos','Género']],
-      body: arrayInc,
-      theme: 'grid',
-      styles : { halign : 'center'},
-     headStyles :{fillColor : [0, 142, 24]}, 
-     alternateRowStyles: {fillColor : [221, 252, 216]}, 
-     tableLineColor: [0, 142, 24], 
-     tableLineWidth: 0.1,
-     margin: {top: 30},
+        title: 'En breves se descargará el archivo!',
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+        },
       })
-      doc.save('Reporte general de incidentes_'+onlyDateNumber(Date.now())+'.pdf')
   
-    }
+    let xls = new XlsExport(report, 'reporte');
+    xls.exportToXLS(`reporte_de_incidentes.xls`)
+  }
+
+  function showModalDetail(lat,lon){
+    const modal = new bootstrap.Modal(document.getElementById('incidentShow'));
+    modal.show()
+    initMap(lat,lon)
+  }
+
+
+  function initMap(latitud,longitud) {
+
+    // Opciones del mapa
+    var mapOptions = {
+      zoom: 15,
+      center: { lat: latitud, lng: longitud }
+    };
+  
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  
+    // Crear un marcador
+    var marker = new google.maps.Marker({
+      position: { lat: latitud, lng: longitud }, // Coordenadas del marcador
+      map: map, // Asociar el marcador con el mapa
+      title: 'Incidente' // Título del marcador (opcional)
+    });
+  
+    // Puedes agregar marcadores u otras personalizaciones al mapa si lo deseas.
+  }
+
+  window.onload = initMap;

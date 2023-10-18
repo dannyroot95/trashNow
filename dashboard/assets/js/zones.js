@@ -74,6 +74,7 @@ function createDatatable(){
     
           numZone++
 
+            let sectors = ""
             let microroutes = ""
             let plates = ""
             let frequency = ""
@@ -89,6 +90,12 @@ function createDatatable(){
             }else if(v.microroutes.length >= 5){
                 space="<br><br>"
             }
+
+            
+          for(let i = 0 ; i<v.sectors.length ; i++){
+            let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.sectors[i]}</label></center>`
+            sectors += data;
+          }
 
             for(let i = 0 ; i<v.microroutes.length ; i++){
                 let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.microroutes[i]}</label></center>`
@@ -113,7 +120,7 @@ function createDatatable(){
                 return `
                 <tr style="cursor: pointer">
                 <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
-                <td><center>${v.sectors}</center></td>
+                <td><center>${sectors}</center></td>
                 <td>${microroutes}</td>
                 <td>${plates}</td>
                 <td>${frequency}</td>
@@ -149,6 +156,7 @@ function getZonesFromDatabase(){
   
         numZone++
 
+          let sectors = "" 
           let microroutes = ""
           let plates = ""
           let frequency = ""
@@ -163,6 +171,11 @@ function getZonesFromDatabase(){
               space="<br>"
           }else if(v.microroutes.length >= 5){
               space="<br><br>"
+          }
+
+          for(let i = 0 ; i<v.sectors.length ; i++){
+            let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.sectors[i]}</label></center>`
+            sectors += data;
           }
 
           for(let i = 0 ; i<v.microroutes.length ; i++){
@@ -188,7 +201,7 @@ function getZonesFromDatabase(){
               return `
               <tr style="cursor: pointer">
               <td style="color: red;font-weight: bold;font-size: 18px;"><center>${space}${v.number}</center></td>
-              <td><center>${v.sectors}</center></td>
+              <td><center>${sectors}</center></td>
               <td>${microroutes}</td>
               <td>${plates}</td>
               <td>${frequency}</td>

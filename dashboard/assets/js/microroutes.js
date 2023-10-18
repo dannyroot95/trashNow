@@ -631,6 +631,8 @@ function showDetails(data) {
   const modal = new bootstrap.Modal(document.getElementById('modalDetail'));
   const modalContent = document.getElementById('map2');
 
+  document.getElementById("nameMR").innerHTML = 'Detalle de Micro-Ruta : '+data.name
+
   // Limpia el contenido anterior si lo hubiera
   modalContent.innerHTML = '';
 
@@ -679,4 +681,51 @@ function showDetails(data) {
     `;
     tbodyCoverage.appendChild(row);
   });
+}
+
+function printer(){
+
+  Swal.fire({
+    title: 'En breves se descargará el archivo!',
+    timer: 5000,
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading()
+    },
+  })
+
+  var mapElement = document.getElementById("map2");
+
+  html2canvas(mapElement, {
+    useCORS: true, // Permite CORS para la captura
+  }).then(canvas => {
+    //document.body.appendChild(canvas)
+
+    html2canvas(document.querySelector("#tb-data-coverage")).then(canvas2 => {
+        //document.body.appendChild(canvas)
+        
+        var pdf = new jspdf.jsPDF()
+        let mr = document.getElementById("nameMR").innerHTML
+      
+        pdf.setFontSize(18)
+        pdf.text(30, 16, "TrashCar Location System Monitoring")
+        pdf.setFontSize(9)
+        pdf.text(30, 22,mr)
+        pdf.setFontSize(12)
+        pdf.addImage('../imgs/car-logo.png', 'PNG', 4, 7, 22, 22)
+      
+        pdf.addImage(canvas, 'JPEG', 7, 32, 195, 100);
+
+        pdf.text(87, 140,'Tabla de coberturas')
+        
+        pdf.addImage(canvas2, 'JPEG', 40, 145, 140, 30);
+
+
+        pdf.save(mr+'.pdf')
+      
+
+      });
+  
+  });
+
 }
