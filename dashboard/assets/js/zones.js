@@ -6,6 +6,7 @@ document.getElementById("descript").value = "Ninguno"
 var numZone 
 let cacheV = localStorage.getItem("zones")
 let vCache = JSON.parse(cacheV)
+let report = []
 
 createDatatable()
 
@@ -61,11 +62,14 @@ function createDatatable(){
       table.columns.adjust().draw();
       document.getElementById("tb-data_filter").style = "margin-bottom:10px;"
       document.getElementById("tb-data_length").style = "margin-bottom:10px;"
-      let button = '<button style="margin-left:10px;color:white;background-color:#D4AC0D;border-color:#D4AC0D;" onclick="showAddZone()" class="btn btn-info">Crear zona</button>'
+      let button = '<button style="margin-left:10px;color:white;background-color:#D4AC0D;border-color:#D4AC0D;" onclick="showAddZone()" class="btn btn-info"><ion-icon name="add-circle"></ion-icon>&nbsp;Crear zona</button>'
+      button = button+'&nbsp;&nbsp;<button onclick="exportToExcel()" class="btn btn-primary"><ion-icon name="print"></ion-icon>&nbsp;Reporte</button>'
       $(button).appendTo('#tb-data_length')
   }
 
   function getZonesFromCache(){
+
+    report = []
 
     $('#tb-data').DataTable().destroy()
             $("#tbody").html(
@@ -75,10 +79,15 @@ function createDatatable(){
           numZone++
 
             let sectors = ""
+            let sectorsV = ""
             let microroutes = ""
+            let microroutesV = ""
             let plates = ""
+            let platesV = ""
             let frequency = ""
+            let frequencyV = ""
             let turn = ""
+            let turnV = ""
             let space = ""
 
             if(v.microroutes.length == 1){
@@ -95,27 +104,43 @@ function createDatatable(){
           for(let i = 0 ; i<v.sectors.length ; i++){
             let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.sectors[i]}</label></center>`
             sectors += data;
+            sectorsV += v.sectors[i]+' | '
           }
 
             for(let i = 0 ; i<v.microroutes.length ; i++){
                 let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.microroutes[i]}</label></center>`
                 microroutes += data;
+                microroutesV += v.microroutes[i]+' | '
             }
 
             for(let j = 0 ; j<v.plates.length ; j++){
                 let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.plates[j]}</label></center>`
                 plates += data;
+                platesV += v.plates[j]+' | '
             }
 
             for(let k = 0 ; k<v.frequency.length ; k++){
                 let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frequency[k]}</label></center>`
                 frequency += data;
+                frequencyV += v.frequency[k]+' | '
             }
 
             for(let m = 0 ; m<v.turn.length ; m++){
                 let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.turn[m]}</label></center>`
                 turn += data;
+                turnV += v.turn[m]+' | '
             }
+
+            let data = {
+              "Numero de zona":v.number,
+              "Sectores" : sectorsV,
+              "Micro-Rutas" : microroutesV,
+              "Placas" : platesV,
+              "Frecencia de recoleccion" : frequencyV,
+              "Turno" : turnV
+            }
+
+            report.push(data)
     
                 return `
                 <tr style="cursor: pointer">
@@ -143,6 +168,7 @@ function getZonesFromDatabase(){
   db.collection("zones").onSnapshot((querySnapshot) => {
 
     numZone = 0
+    report = []
 
         zones = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -156,11 +182,16 @@ function getZonesFromDatabase(){
   
         numZone++
 
-          let sectors = "" 
+          let sectors = ""
+          let sectorsV = ""
           let microroutes = ""
+          let microroutesV = ""
           let plates = ""
+          let platesV = ""
           let frequency = ""
+          let frequencyV = ""
           let turn = ""
+          let turnV = ""
           let space = ""
 
           if(v.microroutes.length == 1){
@@ -176,27 +207,43 @@ function getZonesFromDatabase(){
           for(let i = 0 ; i<v.sectors.length ; i++){
             let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.sectors[i]}</label></center>`
             sectors += data;
+            sectorsV += v.sectors[i]+' | '
           }
 
-          for(let i = 0 ; i<v.microroutes.length ; i++){
-              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.microroutes[i]}</label></center>`
-              microroutes += data;
-          }
+            for(let i = 0 ; i<v.microroutes.length ; i++){
+                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.microroutes[i]}</label></center>`
+                microroutes += data;
+                microroutesV += v.microroutes[i]+' | '
+            }
 
-          for(let j = 0 ; j<v.plates.length ; j++){
-              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.plates[j]}</label></center>`
-              plates += data;
-          }
+            for(let j = 0 ; j<v.plates.length ; j++){
+                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.plates[j]}</label></center>`
+                plates += data;
+                platesV += v.plates[j]+' | '
+            }
 
-          for(let k = 0 ; k<v.frequency.length ; k++){
-              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frequency[k]}</label></center>`
-              frequency += data;
-          }
+            for(let k = 0 ; k<v.frequency.length ; k++){
+                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.frequency[k]}</label></center>`
+                frequency += data;
+                frequencyV += v.frequency[k]+' | '
+            }
 
-          for(let m = 0 ; m<v.turn.length ; m++){
-              let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.turn[m]}</label></center>`
-              turn += data;
-          }
+            for(let m = 0 ; m<v.turn.length ; m++){
+                let data = `<center><label style="border: 1px solid #145A32;width: 100%;">${v.turn[m]}</label></center>`
+                turn += data;
+                turnV += v.turn[m]+' | '
+            }
+
+            let data = {
+              "Numero de zona":v.number,
+              "Sectores" : sectorsV,
+              "Micro-Rutas" : microroutesV,
+              "Placas" : platesV,
+              "Frecencia de recoleccion" : frequencyV,
+              "Turno" : turnV
+            }
+
+            report.push(data)
   
               return `
               <tr style="cursor: pointer">
@@ -475,6 +522,7 @@ function deleteZone(id){
     'Se ha creado la zona!',
     'success'
   )
+  clean()
   
   $('#addZone').modal('hide')
   }else{
@@ -531,4 +579,32 @@ function getSelectedData() {
   const selectedDataString = selectedDataArray.join(',');
 
   return selectedDataString;
+}
+
+function clean(){
+  document.getElementById("d1").checked = false
+  document.getElementById("d2").checked = false
+  document.getElementById("d3").checked = false
+  document.getElementById("d4").checked = false
+  document.getElementById("d5").checked = false
+  document.getElementById("d6").checked = false
+  document.getElementById("d7").checked = false
+  document.getElementById("descript").value = ""
+  document.getElementById("tbodyS").innerHTML = ""
+}
+
+function exportToExcel(){
+
+
+  Swal.fire({
+      title: 'En breves se descargará el archivo!',
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading()
+      },
+    })
+
+  let xls = new XlsExport(report, 'reporte');
+  xls.exportToXLS(`reporte_de_zonas.xls`)
 }

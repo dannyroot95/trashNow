@@ -1,5 +1,6 @@
 let selector = document.getElementById("inputGroupSelectType"); 
 var vehicles = []
+var report = []
 createDatatable()
 
 let cacheV = localStorage.getItem("drivers")
@@ -57,6 +58,7 @@ function createDatatable(){
     document.getElementById("tb-data_filter").style = "margin-bottom:10px;"
     document.getElementById("tb-data_length").style = "margin-bottom:10px;"
     let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-primary">Agregar conductor</button>'
+    button = button+'&nbsp;&nbsp;<button onclick="exportToExcel()" class="btn btn-primary"><ion-icon name="print"></ion-icon>&nbsp;Reporte</button>'
     $(button).appendTo('#tb-data_length')
 }
 
@@ -166,6 +168,7 @@ function getUsersFromDatabase(){
         .map((v) => {
 
           let status = `<b style="color:green;">Activo<b>`
+          let statusX = "Activo"
           let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
           let hasVehicle = `<button onclick="showAddVehicle('${v.account}','${v.id}')" class="btn btn-danger"><ion-icon name="car-outline"></ion-icon></button>`
           let t = v.type
@@ -174,6 +177,7 @@ function getUsersFromDatabase(){
     
           if(v.account == "0"){
             status = `<b style="color:red;">Eliminado<b>`
+            statusX = "Eliminado"
             btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
           }
 
@@ -192,6 +196,21 @@ function getUsersFromDatabase(){
           if(plate == null ){
             plate = `<a style="color:red;">Sin registro</a>`
           }
+
+
+          
+          let data = {
+            "Nombres" : v.lastname+" "+v.name,
+            "DNI" : v.dni,
+            "Correo" : v.email,
+            "Teléfono" : v.phone,
+            "Licencia" :v.licence,
+            "Placa" :v.plateNumber,
+            "Tipo" :x,
+            "Estado" :statusX
+          }
+
+          report.push(data)
 
 
           ctx++
@@ -238,6 +257,7 @@ function getUsersFromCache(){
     .map((v) => {
 
       let status = `<b style="color:green;">Activo<b>`
+      let statusX = "Activo"
           let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
           let hasVehicle = `<button onclick="showAddVehicle('${v.account}','${v.id}')" class="btn btn-danger"><ion-icon name="car-outline"></ion-icon></button>`
           let t = v.type
@@ -246,6 +266,7 @@ function getUsersFromCache(){
     
           if(v.account == "0"){
             status = `<b style="color:red;">Eliminado<b>`
+            statusX = "Eliminado"
             btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
           }
 
@@ -264,6 +285,18 @@ function getUsersFromCache(){
             plate = `<a style="color:red;">Sin registro</a>`
           }
 
+          let data = {
+            "Nombres" : v.lastname+" "+v.name,
+            "DNI" : v.dni,
+            "Correo" : v.email,
+            "Teléfono" : v.phone,
+            "Licencia" :v.licence,
+            "Placa" :v.plateNumber,
+            "Tipo" :x,
+            "Estado" :statusX
+          }
+
+          report.push(data)
 
       ctx++
 
@@ -372,4 +405,20 @@ function asing(){
   )
 
 
+}
+
+function exportToExcel(){
+
+
+  Swal.fire({
+      title: 'En breves se descargará el archivo!',
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading()
+      },
+    })
+
+  let xls = new XlsExport(report, 'reporte');
+  xls.exportToXLS(`conductores.xls`)
 }

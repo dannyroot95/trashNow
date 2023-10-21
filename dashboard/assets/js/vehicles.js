@@ -1,5 +1,7 @@
-createDatatable()
 
+var report = []
+
+createDatatable()
 let cacheV = localStorage.getItem("vehicles")
 let vCache = JSON.parse(cacheV)
 
@@ -12,6 +14,8 @@ if(vCache == null){
 }
 
 function getVehiclesFromDatabase(){
+
+  report = []
 
   db.collection("vehicles").onSnapshot((querySnapshot) => {
 
@@ -33,6 +37,14 @@ function getVehiclesFromDatabase(){
           }else if(v.color == "3"){
             color = `background-color:#A98D00;`
           }
+
+          let data = {
+            "Placa":v.placa,
+            "Modelo":v.marca,
+            "Soat":v.soat,
+          }
+
+          report.push(data)
 
           ctx++
 
@@ -65,6 +77,7 @@ function getVehiclesFromDatabase(){
 function getVehiclesFromCache(){
 
   let ctx = 0
+  report = []
    
     $('#tb-data').DataTable().destroy()
     $("#tbody").html(
@@ -79,6 +92,13 @@ function getVehiclesFromCache(){
         color = `background-color:#A98D00;`
       }
 
+      let data = {
+        "Placa":v.placa,
+        "Modelo":v.marca,
+        "Soat":v.soat,
+      }
+
+      report.push(data)
 
       ctx++
 
@@ -134,7 +154,8 @@ function createDatatable(){
     table.columns.adjust().draw();
     document.getElementById("tb-data_filter").style = "margin-bottom:10px;"
     document.getElementById("tb-data_length").style = "margin-bottom:10px;"
-    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-success">Agregar vehículo</button>'
+    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-success"><ion-icon name="add-circle"></ion-icon>&nbsp;Agregar vehículo</button>'
+    button = button+'&nbsp;&nbsp;<button onclick="exportToExcel()" class="btn btn-primary"><ion-icon name="print"></ion-icon>&nbsp;Reporte</button>'
     $(button).appendTo('#tb-data_length')
 
 }
@@ -200,4 +221,21 @@ function deleteVehicle(id){
     'success'
   )
 
+}
+
+
+function exportToExcel(){
+
+
+  Swal.fire({
+      title: 'En breves se descargará el archivo!',
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading()
+      },
+    })
+
+  let xls = new XlsExport(report, 'reporte');
+  xls.exportToXLS(`vehiculos.xls`)
 }

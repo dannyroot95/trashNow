@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <title>Sectores</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh7U0aNiNGd0oLz7CLzdluscfw2ojSnsc&libraries=drawing"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" charset="utf-8"></script>
@@ -10,9 +12,11 @@
   <link rel="stylesheet" href="../../../modal/micromodal.css" type="text/css" media="all" />
   <link rel="stylesheet" href="../../assets/css/area.css" type="text/css" media="all" />
   <script src="../../../modal/micromodal.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh7U0aNiNGd0oLz7CLzdluscfw2ojSnsc&libraries=drawing"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="../js/tableJS/jspdf.min.js"></script>
+  <script src="../js/tableJS/jspdf.plugin.autotable.min.js"></script>
 
 </head>
 <style>
@@ -25,6 +29,10 @@
         width:100%;
         height:350px;
       }
+      #mapa{
+    width: 100%;
+    height: 700px;
+  }
   </style>
   
   <body>
@@ -37,9 +45,24 @@
         <i class="bi bi-node-plus-fill"></i>&nbsp;Nuevo sector</button>
         <button class="btnOptionDeny animate__animated animate__bounceIn" onclick="deleteArea()">
         <i class="bi bi-trash3-fill"></i>&nbsp;Quitar sector</button>
+        <button class="btnCalendar animate__animated animate__bounceIn" onclick="printSector()">
+        <ion-icon name="print"></ion-icon>&nbsp;Imprimir</button>
     </div></center>
 
     <div id="mapa"></div>
+    <table class="table table-hover table-bordered display rounded rounded-3 overflow-hidden" style="width: 100%;" id="tb-data-sector">
+      <thead>
+        <tr style="background-color: #047639;color: white;">
+          <th scope="col">#</th>
+          <th scope="col">Nombre de sector</th>
+          <th scope="col">Color</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbodySector">
+       
+      </tbody>
+    </table>
    
     <div class="modal micromodal-slide" id="modal-area" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1">

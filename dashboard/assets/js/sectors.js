@@ -5,6 +5,39 @@ var vertices = ""
 var idDeleteArea = ""
 var point = {}
 
+//createDatatable()
+
+function createDatatable(){
+
+  $('#tb-data-sector').DataTable({
+      language: {
+            "decimal": "",
+            "emptyTable": "No hay información",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ datos",
+            "infoEmpty": "<b>Mostrando 0 to 0 of 0 datos</b>",
+            "infoFiltered": "(Filtrado de _MAX_ total datos)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ datos",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar en la lista: ",
+            "zeroRecords": "Sin resultados encontrados",
+            "paginate": {
+                "first": "Primero",
+                "last": "Ultimo",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+     },scrollY: '50vh',scrollX: true, sScrollXInner: "100%",
+     scrollCollapse: true,
+    });
+
+    var table = $('#tb-data-sector').DataTable();
+    $('#container').css( 'display', 'block' );
+    table.columns.adjust().draw();
+}
+
 function showArea(){
   MicroModal.show("modal-area")
 }
@@ -259,6 +292,8 @@ function overlayClickListener(overlay) {
 
 function init() {
 
+  let ctx = 0
+
   var infowindow = new google.maps.InfoWindow({
     size: new google.maps.Size(150, 50)
   });
@@ -287,6 +322,7 @@ function init() {
 
     snapshot.forEach(query => {
 
+      ctx++
       // Construct the polygon.
       const polygon = new google.maps.Polygon({
         paths: query.data().shapes,
@@ -296,6 +332,19 @@ function init() {
         fillColor: query.data().color,
         fillOpacity: 0.35,
       });
+
+        // Agregar una fila a la tabla
+        const tableBody = document.getElementById("tbodySector");
+        const newRow = tableBody.insertRow();
+
+        // Añadir celdas a la fila
+        const cell1 = newRow.insertCell(0);
+        cell1.innerHTML = `<center><strong>${ctx}</strong></center>`;
+        const cell2 = newRow.insertCell(1);
+        cell2.innerHTML = `<center>${(query.data().label).toString().toUpperCase()}</center>`;
+        const cell3 = newRow.insertCell(2);
+        cell3.style.backgroundColor = query.data().color; // Establecer el color de fondo de la celda
+
 
       google.maps.event.addListener(polygon, "mouseover", function(event) {   
         infowindow.setContent("<br><b>"+query.data().label+"</b><br>");
@@ -441,6 +490,43 @@ function cancelDeleteArea(){
 
 function cancelAddArea(){
   document.getElementById("label").value = "" 
+}
+
+
+function printSector(){
+
+  Swal.fire({
+    title: 'En breves se descargará el archivo!',
+    timer: 5000,
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading()
+    },
+  })
+
+  var mapElement = document.getElementById("mapa");
+
+  html2canvas(mapElement, {
+    useCORS: true, // Permite CORS para la captura
+  }).then(canvas => {
+    html2canvas(document.querySelector("#tb-data-sector")).then(canvas2 => {
+    //document.body.appendChild(canvas)
+    var pdf = new jspdf.jsPDF()
+  
+    pdf.setFontSize(18)
+    pdf.text(30, 16, "TrashCar Location System Monitoring")
+    pdf.setFontSize(9)
+    pdf.text(30, 22,'Mapa de sectores')
+    pdf.setFontSize(12)
+    pdf.addImage('../imgs/car-logo.png', 'PNG', 4, 7, 22, 22)
+  
+    pdf.addImage(canvas, 'JPEG', 0, 32, 220, 130);
+    pdf.addImage(canvas2, 'JPEG', 0, 160, 210, 13);
+    pdf.save('mapa_de_sectores.pdf')
+  
+    });
+  });
+
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

@@ -10,7 +10,7 @@ function inicializarMapa() {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
 }
 
-function mostrarEnMapa(latitude, longitude) {
+function mostrarEnMapa(latitude, longitude, iconUrl) {
   // Elimina los marcadores existentes en el mapa
   markers.forEach(marker => marker.setMap(null));
   markers.length = 0; // Limpia la matriz de marcadores
@@ -19,7 +19,11 @@ function mostrarEnMapa(latitude, longitude) {
 
   const marker = new google.maps.Marker({
     position: location,
-    map: map
+    map: map,
+    icon: {
+      url: iconUrl, // Establece la URL de la imagen del marcador personalizado
+      scaledSize: new google.maps.Size(60, 50), // Ajusta el tamaño del marcador (en este caso, 20x20 píxeles)
+    },
   });
 
   // Agrega el nuevo marcador a la matriz
@@ -39,10 +43,14 @@ db.collection('Locations').onSnapshot((querySnapshot) => {
       const latitude = data.l[0];
       const longitude = data.l[1];
 
-      // Llama a una función para mostrar los datos en el mapa de Google Maps
-      mostrarEnMapa(latitude, longitude);
+      // Llama a la función para mostrar los datos en el mapa de Google Maps
+      mostrarEnMapa(latitude, longitude, '../imgs/icon-trash-car.png');
     } else {
       console.log('No se encontraron datos para este ID.');
     }
   });
 });
+
+
+
+
