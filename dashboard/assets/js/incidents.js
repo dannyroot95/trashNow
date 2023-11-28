@@ -21,26 +21,33 @@
             incidents
               .map((file) => {
 
+                let pl = file.plate
+                if(pl == "null"){
+                  pl = "Sin registro"
+                }
+
                 let data = {
                   "Nombre del conductor":file.user,
                   "DNI":file.dni,
                   "Teléfono":file.phone,
-                  "Placa de vehículo":file.plate,
+                  "Placa de vehículo":pl,
                   "Referencia de incidente":file.reference,
-                  "Fecha":onlyDateNumber(file.date*1000)+" "+onlyHour(file.date*1000),
+                  "Descripción":file.description,
+                  "Fecha":onlyDateNumber(file.date)+" "+onlyHour(file.date),
                   "Latitud":file.latitude,
                   "Longitud":file.longitude
                 }
                 report.push(data)
 
                 ctx++
+
                 return `
                 <tr>
                 <td>${ctx}</td>
                 <td>${file.user}</td>
                 <td>${file.dni}</td>
                 <td>${file.phone}</td>
-                <td>${file.plate}</td>
+                <td>${pl}</td>
                 <td>${file.reference}</td>
                 <td>${onlyDateNumber(file.date*1000)+" "+onlyHour(file.date*1000)}</td>
                 <td><center><button onclick="showModalDetail(${file.latitude},${file.longitude})" class="btn btn-danger"><ion-icon name="location"></ion-icon>&nbsp;Ver ubicación</button></center></td>
@@ -88,45 +95,36 @@
       $(button).appendTo('#tb-incident_length')
   }
 
-  function onlyDateNumber(UNIX_timestamp){
-    var a = new Date(UNIX_timestamp);
-    var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+  function onlyDateNumber(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp / 1000);
+    var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
     var date = a.getDate();
-
-      if(date <=9){
-        date = "0"+date
-      }
+  
+    if (date <= 9) {
+      date = "0" + date;
+    }
+  
     var time = date + '/' + month + '/' + year;
     return time;
   }
-
-  function onlyHour(UNIX_timestamp){
-    var a = new Date(UNIX_timestamp);
+  
+  function onlyHour(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp / 1000);
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-
-    var stringhour = hour
-    var stringmin = min
-    var stringseg = sec
-
-    if(hour <=9){
-      stringhour = "0"+hour
-   }
-    if(min <=9){
-       stringmin = "0"+min
-    }
-    if(sec <=9){
-      stringseg = "0"+sec
-    }
-
-    var time = stringhour + ':' + stringmin ;
-
+  
+    var stringhour = hour < 10 ? "0" + hour : hour;
+    var stringmin = min < 10 ? "0" + min : min;
+    var stringsec = sec < 10 ? "0" + sec : sec;
+  
+    var time = stringhour + ':' + stringmin + ':' + stringsec;
+  
     return time;
   }
-
+  
 
 
   function exportToExcel(){

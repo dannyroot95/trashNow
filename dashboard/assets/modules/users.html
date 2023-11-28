@@ -79,7 +79,7 @@
 
           <div class="input-group mb-3">
             <span class="input-group-text">DNI</span>
-            <input type="tel" maxlength="8" id="dni" style="text-transform: uppercase;" class="form-control" aria-describedby="basic-addon1">
+            <input onkeypress="validarEntrada(event)" type="text" maxlength="8" id="dni" style="text-transform: uppercase;" class="form-control" aria-describedby="basic-addon1">
           </div>
 
           <div class="input-group mb-3">
@@ -96,7 +96,7 @@
 
           <div class="input-group mb-3">
             <span class="input-group-text">Teléfono</span>
-            <input type="tel" id="phone" style="background-color: white;text-transform: uppercase;color: black;" 
+            <input onkeypress="validarEntrada(event)" type="text" maxlength="9" id="phone" style="background-color: white;text-transform: uppercase;color: black;" 
             class="form-control" aria-describedby="basic-addon1">
           </div>
 
@@ -109,21 +109,78 @@
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectType">Tipo de usuario</label>
             <select class="form-select" id="inputGroupSelectType">
-              <option value="0" selected disabled>Seleccione...</option>
-              <option value="1">Administrador</option>
-              <option value="2">Editor</option>
+
+              <option selected value="1">Administrador</option>
+  
             </select>
           </div>
       
           <div class="input-group mb-3">
             <span class="input-group-text">Contraseña</span>
             <input type="password" id="pass" class="form-control" aria-describedby="basic-addon1">
-          </div>          
+          </div>
+          <label style="color: red;font-weight: 600;">**La contraseña debe tener más de 6 caracteres</label>     
+          <p></p>     
+
+          <center><label style="display: none;" id="onload">Creando usuario, por favor espere...</label></center>
 
         </div>
         <div class="modal-footer">
-          <button type="button" onclick="closeAddModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" onclick="createUser()" class="btn btn-success">Guardar</button>
+          <button id="btnCancel" type="button" onclick="closeAddModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button id="btnCreateUser" type="button" onclick="createUser()" class="btn btn-success">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--edit user-->
+
+  <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Actualiza datos de usuario</h5>
+          </button>
+        </div>
+        <div class="modal-body">
+          <center><img src="/dashboard/assets/imgs/usersicon.webp" width="20%"></center>
+
+          <label style="display: none;" id="ETIdUser"></label>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">DNI</span>
+            <input onkeypress="validarEntrada(event)" type="text" maxlength="8" id="dniET" style="text-transform: uppercase;" class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Apellidos</span>
+            <input type="text" id="lastnameET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Nombres</span>
+            <input type="text" id="fullnameET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Teléfono</span>
+            <input onkeypress="validarEntrada(event)" type="text" maxlength="9" id="phoneET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Email</span>
+            <input type="emailET" id="emailET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+      
+
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancel" type="button" onclick="closeEditModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button id="btnCreateUser" type="button" onclick="updateData()" class="btn btn-success">Actualizar datos</button>
         </div>
       </div>
     </div>

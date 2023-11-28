@@ -81,8 +81,14 @@ function fireLogin(dni, pass) {
               name_office : doc.data().name_office,
               type: doc.data().type,
             };
-            localStorage.setItem("user", JSON.stringify(dataLogin));
-            window.location.href = "./dashboard";
+            
+            if(dataLogin.type == "super_admin"){
+              localStorage.setItem("user", JSON.stringify(dataLogin));
+              window.location.href = "./dashboard";
+            }else{
+              localStorage.setItem("user", JSON.stringify(dataLogin));
+              window.location.href = "./dashboard";
+            }
           } else {
             $("#spinner").css("display", "none");
             Swal.fire(

@@ -1,5 +1,6 @@
 let map;
 const markers = []; // Almacena referencias a los marcadores
+let polyline; // Almacena referencia a la polilínea
 
 function inicializarMapa() {
   const mapOptions = {
@@ -8,30 +9,45 @@ function inicializarMapa() {
   };
 
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  
+  // Crea la polilínea inicialmente vacía
+  polyline = new google.maps.Polyline({
+    path: [],
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 3,
+    map: map,
+  });
 }
 
 function mostrarEnMapa(latitude, longitude, iconUrl) {
   // Elimina los marcadores existentes en el mapa
   markers.forEach(marker => marker.setMap(null));
-  markers.length = 0; // Limpia la matriz de marcadores
 
-  const location = { lat: latitude, lng: longitude };
+  const location = new google.maps.LatLng(latitude, longitude);
 
   const marker = new google.maps.Marker({
     position: location,
     map: map,
     icon: {
-      url: iconUrl, // Establece la URL de la imagen del marcador personalizado
-      scaledSize: new google.maps.Size(60, 50), // Ajusta el tamaño del marcador (en este caso, 20x20 píxeles)
+      url: iconUrl,
+      scaledSize: new google.maps.Size(60, 50),
     },
   });
 
   // Agrega el nuevo marcador a la matriz
   markers.push(marker);
 
+  // Añade la posición a la polilínea principal
+  //const path = polyline.getPath();
+  //path.push(location);
+  //polyline.setPath(path);
+
   // Centra el mapa en la nueva ubicación
   map.setCenter(location);
 }
+
 
 // Llamar a inicializarMapa() después de definirla
 inicializarMapa();
@@ -50,7 +66,3 @@ db.collection('Locations').onSnapshot((querySnapshot) => {
     }
   });
 });
-
-
-
-

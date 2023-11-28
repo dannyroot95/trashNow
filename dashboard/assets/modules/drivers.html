@@ -124,10 +124,14 @@
           <div class="input-group mb-3">
             <span class="input-group-text">Contraseña</span>
             <input type="password" id="pass" class="form-control" aria-describedby="basic-addon1">
-          </div>          
+          </div>      
+          <label style="color: red;font-weight: 600;">**La contraseña debe tener más de 6 caracteres</label>
+          <p></p>    
+
+          <center><label id="addDriver" style="display: none;">Agregando usuario...</label></center>
 
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" id="div-footer">
           <button type="button" onclick="closeAddModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
           <button type="button" onclick="createUser()" class="btn btn-success">Guardar</button>
         </div>
@@ -136,6 +140,68 @@
   </div>
 
   <!-- ======  ======= -->
+
+  <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar datos de conductor</h5>
+          </button>
+        </div>
+        <div class="modal-body">
+          <center><img src="/dashboard/assets/imgs/usersicon.webp" width="20%"></center>
+
+          <label style="display: none;" id="ETIdUser"></label>
+          <center><label>Email : </label><label id="emailET"></label></center>
+
+          <br>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">DNI</span>
+            <input type="tel" maxlength="8" id="dniET" style="text-transform: uppercase;" class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Apellidos</span>
+            <input type="text" id="lastnameET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Nombres</span>
+            <input type="text" id="fullnameET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">Teléfono</span>
+            <input type="tel" id="phoneET" style="background-color: white;text-transform: uppercase;color: black;" 
+            class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectTypeET">Tipo de conductor</label>
+            <select class="form-select" id="inputGroupSelectTypeET">
+              <option value="0" selected disabled>Seleccione...</option>
+              <option value="1">Co-conductor</option>
+              <option value="2">Conductor</option>
+            </select>
+          </div>
+      
+          <div class="input-group mb-3" id="liET-b" style="display: none;">
+            <span class="input-group-text">N° de licencia</span>
+            <input type="tel" id="liET" class="form-control" aria-describedby="basic-addon1">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="closeEditModal()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button type="button" onclick="updateDriver()" class="btn btn-success">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Modal -->
 <div class="modal fade" id="addVehicle" tabindex="-1" role="dialog" aria-hidden="true">

@@ -1,4 +1,5 @@
 let selector = document.getElementById("inputGroupSelectType"); 
+let selector2 = document.getElementById("inputGroupSelectTypeET"); 
 var vehicles = []
 var report = []
 createDatatable()
@@ -24,6 +25,16 @@ selector.addEventListener("change", () => {
             document.getElementById("li-b").style = "display:flex;"
         }
       });
+
+selector2.addEventListener("change", () => {
+        // if value switched by client
+          if(selector2.value == "1"){
+              document.getElementById("liET-b").style = "display:none;"
+              document.getElementById("liET").value = ""
+          }else{
+              document.getElementById("liET-b").style = "display:flex;"
+          }
+        });      
    
 
 function createDatatable(){
@@ -57,7 +68,7 @@ function createDatatable(){
     table.columns.adjust().draw();
     document.getElementById("tb-data_filter").style = "margin-bottom:10px;"
     document.getElementById("tb-data_length").style = "margin-bottom:10px;"
-    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-primary">Agregar conductor</button>'
+    let button = '<button style="margin-left:10px;" onclick="showAddModal()" class="btn btn-success">+ Agregar conductor</button>'
     button = button+'&nbsp;&nbsp;<button onclick="exportToExcel()" class="btn btn-primary"><ion-icon name="print"></ion-icon>&nbsp;Reporte</button>'
     $(button).appendTo('#tb-data_length')
 }
@@ -99,6 +110,9 @@ function createUser(){
   let email = document.getElementById("email").value
 
   if(dni != "" && lastname !="" && name != "" && type != "" && password != "" && email != ""){
+
+    document.getElementById("div-footer").style = "display:none;"
+    document.getElementById("addDriver").style = "display:block;"
   
     firebase.auth().createUserWithEmailAndPassword(email, password)
   .then((userCredential) => {
@@ -130,6 +144,9 @@ function createUser(){
       'Usuario creado!',
       'success'
     )
+    document.getElementById("div-footer").style = "display:block;"
+    document.getElementById("addDriver").style = "display:none;"
+  
     clearInputs()
 
     // ...
@@ -169,7 +186,11 @@ function getUsersFromDatabase(){
 
           let status = `<b style="color:green;">Activo<b>`
           let statusX = "Activo"
-          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>
+          &nbsp;&nbsp;&nbsp;
+          <button onclick="editDriver('${v.id}','${v.type}','${v.name}','${v.lastname}','${v.licence}','${v.dni}','${v.phone}','${v.email}')" class="btn btn-light" style="background-color:#2874A6;color:#fff;" >Editar</button>
+          `
+
           let hasVehicle = `<button onclick="showAddVehicle('${v.account}','${v.id}')" class="btn btn-danger"><ion-icon name="car-outline"></ion-icon></button>`
           let t = v.type
           let x = ""
@@ -258,7 +279,10 @@ function getUsersFromCache(){
 
       let status = `<b style="color:green;">Activo<b>`
       let statusX = "Activo"
-          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>
+          &nbsp;&nbsp;&nbsp;
+          <button onclick="editDriver('${v.id}','${v.type}','${v.name}','${v.lastname}','${v.licence}','${v.dni}','${v.phone}','${v.email}')" class="btn btn-light" style="background-color:#2874A6;color:#fff;" >Editar</button>
+          `
           let hasVehicle = `<button onclick="showAddVehicle('${v.account}','${v.id}')" class="btn btn-danger"><ion-icon name="car-outline"></ion-icon></button>`
           let t = v.type
           let x = ""
@@ -421,4 +445,74 @@ function exportToExcel(){
 
   let xls = new XlsExport(report, 'reporte');
   xls.exportToXLS(`conductores.xls`)
+}
+
+function editDriver(id,type,name,lastname,licence,dni,phone,email){
+  
+  $('#modalEdit').modal('show')
+
+  if(licence != ""){
+    document.getElementById("liET-b").style = "display:flex;"
+    document.getElementById("liET").value = licence
+  }
+
+  document.getElementById('inputGroupSelectTypeET').value = type;
+  document.getElementById("ETIdUser").innerHTML = id
+
+  document.getElementById("dniET").value = dni
+  document.getElementById("fullnameET").value = name
+  document.getElementById("phoneET").value = phone
+  document.getElementById("lastnameET").value = lastname
+  document.getElementById("emailET").innerHTML = email
+  document.getElementById("emailET").disabled = true
+  document.getElementById("emailET").style = "color:red;"
+
+}
+
+function closeEditModal(){
+  $('#modalEdit').modal('hide')
+  document.getElementById("liET").style = "display:none;"
+}
+
+function updateDriver(){
+
+  let licence =  document.getElementById("liET").value 
+  let dni = document.getElementById("dniET").value 
+  let name = document.getElementById("fullnameET").value 
+  let phone = document.getElementById("phoneET").value 
+  let lastname = document.getElementById("lastnameET").value 
+  let id = document.getElementById("ETIdUser").innerHTML
+  let type = document.getElementById("inputGroupSelectTypeET").value
+
+  
+  let data = {
+    dni : dni,
+    lastname : lastname,
+    name : name,
+    phone : phone,
+    type : type,
+    licence : licence
+  }
+
+  if(dni != "" && name != "" && phone != "" && lastname != ""){
+
+    if(type == "1"){
+      data.licence = ""
+      db.collection("Drivers").doc(id).update(data)
+      $('#modalEdit').modal('hide')
+      Swal.fire('Datos actualizados!')
+    }else{
+      if(type == "2" && licence != ""){
+        db.collection("Drivers").doc(id).update(data)
+        $('#modalEdit').modal('hide')
+        Swal.fire('Datos actualizados!')
+      }else{
+        Swal.fire('Agrege el N° de licencia!')
+      }
+    }
+  
+  }else{
+    Swal.fire('Complete los campos!')
+  }
+ 
 }

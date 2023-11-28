@@ -13,15 +13,7 @@ if(vCache == null){
   getUsersFromCache()
 }
 
-selector.addEventListener("change", () => {
-      // if value switched by client
-        if(selector.value == "1"){
-            document.getElementById("li-b").style = "display:none;"
-            document.getElementById("li").value = ""
-        }else{
-            document.getElementById("li-b").style = "display:flex;"
-        }
-      });
+
    
 
 function createDatatable(){
@@ -66,17 +58,34 @@ function showAddModal(){
   }
   
   function closeAddModal(){
-    $('#modalShow').modal('hide')
+    $('#modalShow').modal('hide')  
   }
+
+  function closeEditModal(){
+    $('#modalEdit').modal('hide')  
+  }
+
+ function modalEditUser(id,lastname,name,dni,phone,email){
+    $('#modalEdit').modal('show')
+
+    document.getElementById("ETIdUser").innerHTML = id
+
+    document.getElementById("dniET").value = dni
+    document.getElementById("fullnameET").value = name
+    document.getElementById("phoneET").value = phone
+    document.getElementById("lastnameET").value = lastname
+    document.getElementById("emailET").value = email
+
+ } 
   
   function clearInputs(){
     document.getElementById("dni").value = ""
     document.getElementById("fullname").value = ""
     document.getElementById("inputGroupSelectType").value = "0"
-    document.getElementById("li").value = ""
     document.getElementById("password").value = ""
     document.getElementById("phone").value = ""
     document.getElementById("lastname").value = ""
+    document.getElementById("email").value = ""
 }
 
 
@@ -92,6 +101,11 @@ function createUser(){
 
   if(dni != "" && lastname !="" && name != "" && type != "" && password != "" && email != ""){
   
+    document.getElementById("onload").style = "display:block;"
+    document.getElementById("btnCreateUser").style = "display:none;"
+    document.getElementById("btnCancel").style = "display:none;"
+
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
   .then((userCredential) => {
     // Signed in
@@ -107,10 +121,14 @@ function createUser(){
       phone : phone,
       token : "",
       type : type,
-      account : 1
+      account : 1,
+      pass:btoa(password)
     }
 
     db.collection("users").doc(user).set(data)
+    document.getElementById("onload").style = "display:none;"
+    document.getElementById("btnCreateUser").style = "display:block;"
+    document.getElementById("btnCancel").style = "display:block;"
     closeAddModal()
     Swal.fire(
       'Muy bien!',
@@ -125,6 +143,9 @@ function createUser(){
 
     var errorCode = error.code;
     var errorMessage = error.message;
+    document.getElementById("onload").style = "display:none;"
+    document.getElementById("btnCreateUser").style = "display:block;"
+    document.getElementById("btnCancel").style = "display:block;"
     // ..
   });
   }else{
@@ -155,11 +176,15 @@ function getUsersFromDatabase(){
         .map((v) => {
 
           let status = `<b style="color:green;">Activo<b>`
-          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+          let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>
+          &nbsp;&nbsp;&nbsp;
+          <button style="background-color:#2874A6;color:#fff;" 
+          onclick="modalEditUser('${v.id}','${v.lastname}','${v.name}','${v.dni}','${v.phone}','${v.email}')" class="btn btn-light">Editar</button>
+          `
     
           if(v.account == "0"){
             status = `<b style="color:red;">Eliminado<b>`
-            btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
+            btn = `<center><button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button></center>`
           }
 
           let t = v.type
@@ -213,11 +238,15 @@ function getUsersFromCache(){
     .map((v) => {
 
       let status = `<b style="color:green;">Activo<b>`
-      let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>`
+      let btn = `<button onclick="modalDisable('${v.id}')" class="btn btn-danger">Eliminar</button>
+           &nbsp;&nbsp;&nbsp;
+          <button style="background-color:#2874A6;color:#fff;" 
+          onclick="modalEditUser('${v.id}','${v.lastname}','${v.name}','${v.dni}','${v.phone}','${v.email}')" class="btn btn-light">Editar</button>
+      `
 
       if(v.account == "0"){
         status = `<b style="color:red;">Eliminado<b>`
-        btn = `<button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button>`
+        btn = `<center><button onclick="modalEnable('${v.id}')" class="btn btn-success">Habilitar</button></center>`
       }
 
       let t = v.type
@@ -287,4 +316,38 @@ function modalDisable(id){
       Swal.fire('Eliminado!')
     }
   })
+}
+
+function validarEntrada(event) {
+  const charCode = event.charCode;
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault(); // Evita la entrada del carácter
+  }
+}
+
+function updateData(){
+  let dni = document.getElementById("dniET").value
+  let lastname = document.getElementById("lastnameET").value
+  let name = document.getElementById("fullnameET").value
+  let phone = document.getElementById("phoneET").value
+  let id = document.getElementById("ETIdUser").innerHTML
+  let email = document.getElementById("emailET").value
+
+  let data = {
+    dni : dni,
+    lastname : lastname,
+    name : name,
+    phone : phone,
+    email : email
+  }
+
+  if(dni != "" && lastname != "" && name != "" && phone != "" && email != ""){
+    db.collection("users").doc(id).update(data)
+    $('#modalEdit').modal('hide')
+    Swal.fire('Datos actualizados!')
+  }else{
+    Swal.fire('Complete los campos!')
+  }
+
+
 }

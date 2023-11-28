@@ -10,7 +10,7 @@ if (user.type == "super_admin") {
 
               <img src="/dashboard/assets/imgs/cowlogo.png"" width="40px" height="40px" style="margin-top: 12px;" />
             </span>
-            <span class="title2"><strong>TrashNow</strong>
+            <span class="title2"><strong>TrashCar</strong>
               <p id="typeUser">Panel</p>
             </span>
           </a>
@@ -129,8 +129,8 @@ if (user.type == "super_admin") {
      
     `
   );
-} else if (user.type == "operator") {
-  console.log("operator");
+} else if (user.type == "2") {
+  console.log("editor");
   $("#modules").html(
     `
     <li>
@@ -184,6 +184,110 @@ if (user.type == "super_admin") {
 
     `
   );
+} else if (user.type == "1") {
+  console.log("admin");
+  $("#modules").html(
+    `
+    <li>
+          <a href="#">
+            <span class="icon">
+
+              <img src="/dashboard/assets/imgs/cowlogo.png"" width="40px" height="40px" style="margin-top: 12px;" />
+            </span>
+            <span class="title2"><strong>TrashCar</strong>
+              <p id="typeUser">Panel</p>
+            </span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#dashboard" class="links_modulo">
+            <span class="icon">
+              <ion-icon name="home-outline"></ion-icon>
+            </span>
+            <span class="title">Inicio</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#dashboard", "_self");
+        </script>
+
+
+        <li>
+          <a href="#vehicles">
+            <span class="icon">
+            <ion-icon name="car-outline"></ion-icon>
+            </span>
+            <span class="title">Vehículos</span>
+          </a>
+        </li>
+        
+        <li>
+          <a href="#sectors">
+            <span class="icon">
+            <ion-icon name="map-outline"></ion-icon>
+            </span>
+            <span class="title">Sectores</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#sectors", "_self");
+        </script>
+
+        <li>
+          <a href="#zones">
+            <span class="icon">
+            <ion-icon name="compass-outline"></ion-icon>
+            </span>
+            <span class="title">Zonas</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#zones", "_self");
+        </script>
+
+        <li>
+          <a href="#routes">
+            <span class="icon">
+            <ion-icon name="location-outline"></ion-icon>
+            </span>
+            <span class="title">Microrutas</span>
+          </a>
+        </li>
+        <script>;
+          window.open("#routes", "_self");
+        </script>
+
+        <li>
+        <a href="#monitoring">
+          <span class="icon">
+          <ion-icon name="aperture"></ion-icon>
+          </span>
+          <span class="title">Monitoreo</span>
+        </a>
+      </li>
+      <script>;
+        window.open("#monitoring", "_self");
+      </script>
+
+        <li>
+        <a href="#incidents">
+          <span class="icon">
+          <ion-icon name="albums-outline"></ion-icon>
+          </span>
+          <span class="title">Incidentes</span>
+        </a>
+      </li>
+      <script>;
+        window.open("#incidents", "_self");
+      </script>
+
+      <script>;
+      window.open("#inicio", "_self");
+    </script>
+
+    `
+  );
 } 
 
 function urlModulo(url) {
@@ -194,19 +298,6 @@ function urlModulo(url) {
   );
 }
 
-function listaModulos_A(modulo, contenedor) {
-  if ("#dashboard" == modulo) {
-    contenedor.innerHTML = urlModulo("assets/modules/admin/dashboard.html");
-    document.getElementById("start").innerText = "Inicio";
-  } else if ("#transfers" == modulo) {
-    contenedor.innerHTML = urlModulo("assets/modules/admin/transfers.html");
-    document.getElementById("start").innerText = "Transferencias";
-  } else if ("#" == modulo) {
-    contenedor.innerHTML = "<br>&nbsp;&nbsp;Muy Pronto...";
-  } else {
-    contenedor.innerHTML = urlModulo("assets/modules/dashboard.html");
-  }
-}
 
 function listaModulos_SA(modulo, contenedor) {
   if ("#dashboard" == modulo) {
@@ -249,18 +340,14 @@ function listaModulos_SA(modulo, contenedor) {
 
 var contentModulo = document.querySelector(".body-content");
 let linkModulo = document.querySelector(".nav-list").querySelectorAll("a");
-if(user.type == "super_admin"){
+if(user.type == "super_admin" || user.type == "1" || user.type == "2"){
   listaModulos_SA(window.location.hash, contentModulo);
-}else if(user.type == "admin"){
-  listaModulos_A(window.location.hash, contentModulo);
 }
 
 linkModulo.forEach((elemento) => {
   elemento.addEventListener("click", function () {
-    if(user.type == "super_admin"){
+    if(user.type == "super_admin" || user.type == "1" || user.type == "2"){
       listaModulos_SA(elemento.getAttribute("href") + "", contentModulo);
-    }else if(user.type == "admin"){
-      listaModulos_A(elemento.getAttribute("href") + "", contentModulo);
     }
   });
 });
