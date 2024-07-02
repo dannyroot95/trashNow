@@ -10,9 +10,31 @@ if(vCache == null){
   getRoutesFromCache()
 }
 
+const mapStyles = [
+  {
+    featureType: "poi", // Ocultar puntos de interés
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "transit", // Ocultar estaciones de tránsito
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "administrative", // Ocultar nombres de lugares administrativos
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "landscape", // Ocultar etiquetas de paisajes
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  }
+];
+
 var map = new google.maps.Map(document.getElementById('map'), {
   center: {lat: -12.594560706767819, lng: -69.19654064464878},
-  zoom: 15
+  zoom: 15,
+  styles:mapStyles
 });
 
 let selector = document.getElementById("inputGroupSelectTurn"); 
@@ -25,6 +47,11 @@ var turnN = 0
 google.maps.event.addListener(map, 'click', function(event) {
   addMarker(event.latLng);
 });
+
+const cPicker = document.getElementById('colorPicker');
+cPicker.addEventListener('input', (event) => {
+    updatePolyline()
+  })
 
 selector.addEventListener("change", () => {
   // if value switched by client
@@ -185,10 +212,10 @@ function removeMarker(marker) {
   }
   updatePolyline();
   console.log(positions);
-
 }
 
 function updatePolyline() {
+  let colorPicker = document.getElementById('colorPicker').value;
   // Verificar si ya existe una línea
   if (polyline !== null) {
     polyline.setMap(null);
@@ -198,7 +225,7 @@ function updatePolyline() {
   polyline = new google.maps.Polyline({
     path: positions,
     geodesic: true,
-    strokeColor: '#FF0000',
+    strokeColor: colorPicker.toString(),
     strokeOpacity: 1.0,
     strokeWeight: 2
   });
@@ -256,6 +283,7 @@ function create(){
   let valueMR = document.getElementById("mr").value
   let turn = document.getElementById("inputGroupSelectTurn").value
   let descript = document.getElementById("descript").value
+  let colorPicker = document.getElementById("colorPicker").value
 
   const coverage = document.getElementById("tb-data-s2");
   const coverageRow = coverage.querySelectorAll("tbody tr");
@@ -296,7 +324,7 @@ function create(){
 
         if (hasPuntoInicial === true && hasPuntoFinal === true) {
 
-        let x = {name : valueMR , turn : turn , id : "" , positions : positions , descript:descript , coverage : dataCoverage()}
+        let x = {name : valueMR , turn : turn , id : "" , positions : positions , descript:descript , coverage : dataCoverage() , color:colorPicker.toString()}
 
         db.collection("microroutes").add(x).then(function(docRef) {
           db.collection("microroutes").doc(docRef.id).update({id:docRef.id})
@@ -647,21 +675,23 @@ function showDetails(data) {
   // Crea un mapa de Google
   const map = new google.maps.Map(mapElement, {
     center: { lat: data.positions[0].lat, lng: data.positions[0].lng }, // Centra el mapa en la primera ubicación
-    zoom: 15 // Define el nivel de zoom
+    zoom: 15, // Define el nivel de zoom
+    styles : mapStyles
   });
 
   // Agrega marcadores en las ubicaciones
+  /*
   const markers = data.positions.map(position => new google.maps.Marker({
     position: { lat: position.lat, lng: position.lng },
     map: map
-  }));
+  }));*/
 
   // Dibuja una línea recta que conecta los marcadores
   const pathCoordinates = data.positions.map(position => new google.maps.LatLng(position.lat, position.lng));
   const path = new google.maps.Polyline({
     path: pathCoordinates,
     geodesic: true,
-    strokeColor: '#FF0000', // Color de la línea
+    strokeColor: data.color, // Color de la línea
     strokeOpacity: 1.0,
     strokeWeight: 2
   });

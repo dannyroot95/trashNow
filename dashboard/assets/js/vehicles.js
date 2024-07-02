@@ -15,10 +15,9 @@ if(vCache == null){
 
 function getVehiclesFromDatabase(){
 
-  report = []
-
   db.collection("vehicles").onSnapshot((querySnapshot) => {
 
+    report = []
     let ctx = 0
 
       vehicles = querySnapshot.docs.map((doc) => ({
@@ -83,8 +82,7 @@ function getVehiclesFromCache(){
     $("#tbody").html(
   vCache
     .map((v) => {
-
-      
+        
       let color = `background-color:#EBEBEB;`
       if(v.color == "2"){
         color = `background-color:#002005;`

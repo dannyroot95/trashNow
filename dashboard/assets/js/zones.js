@@ -581,6 +581,12 @@ function getSelectedData() {
   return selectedDataString;
 }
 
+function showMap(){
+  $('#modalDetailMap').modal('show')
+  getAndShowMicroroute()
+  window.onload = getAndShowMicroroute;
+}
+
 function clean(){
   document.getElementById("d1").checked = false
   document.getElementById("d2").checked = false
@@ -607,4 +613,44 @@ function exportToExcel(){
 
   let xls = new XlsExport(report, 'reporte');
   xls.exportToXLS(`reporte_de_zonas.xls`)
+}
+
+
+function getAndShowMicroroute() {
+  let name = document.getElementById("selectMicroRoute").value
+  document.getElementById("nameMR").innerHTML = "Micro-ruta : "+name
+  db.collection("microroutes").where("name", "==", name.toString()).get().then((snapshot) => {
+    snapshot.forEach(e => {
+      let data = e.data();
+
+      if (data && data.positions) {
+        const map = new google.maps.Map(document.getElementById("mapDetail"), {
+          zoom: 14,
+          center: {
+            lat: data.positions[0].lat,
+            lng: data.positions[0].lng,
+          },
+        });
+
+        const routeCoordinates = data.positions.map(position => ({
+          lat: position.lat,
+          lng: position.lng
+        }));
+
+        const routePath = new google.maps.Polyline({
+          path: routeCoordinates,
+          geodesic: true,
+          strokeColor: data.color,
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+
+        routePath.setMap(map);
+      } else {
+        console.error("Route data or positions are missing.");
+      }
+    });
+  }).catch(error => {
+    console.error("Error getting documents: ", error);
+  });
 }

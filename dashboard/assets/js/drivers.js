@@ -172,6 +172,7 @@ function getUsersFromDatabase(){
   db.collection("Drivers").onSnapshot((querySnapshot) => {
 
     let ctx = 0
+    report = []
 
       users = querySnapshot.docs.map((doc) => ({
           id: doc.id,

@@ -4,6 +4,152 @@ var shapes = []
 var vertices = ""
 var idDeleteArea = ""
 var point = {}
+let mapPoly
+let polylines = []
+
+const mapStyles = [
+  {
+    "featureType": "administrative",
+    "elementType": "all",
+    "stylers": [
+        {
+            "saturation": "-100"
+        }
+    ]
+},
+{
+    "featureType": "administrative.province",
+    "elementType": "all",
+    "stylers": [
+        {
+            "visibility": "off"
+        }
+    ]
+},
+{
+    "featureType": "landscape",
+    "elementType": "all",
+    "stylers": [
+        {
+            "saturation": -100
+        },
+        {
+            "lightness": 65
+        },
+        {
+            "visibility": "on"
+        }
+    ]
+},
+{
+    "featureType": "poi",
+    "elementType": "all",
+    "stylers": [
+        {
+            "saturation": -100
+        },
+        {
+            "lightness": "50"
+        },
+        {
+            "visibility": "simplified"
+        }
+    ]
+},
+{
+    "featureType": "road",
+    "elementType": "all",
+    "stylers": [
+        {
+            "saturation": "-100"
+        }
+    ]
+},
+{
+    "featureType": "road.highway",
+    "elementType": "all",
+    "stylers": [
+        {
+            "visibility": "simplified"
+        }
+    ]
+},
+{
+    "featureType": "road.arterial",
+    "elementType": "all",
+    "stylers": [
+        {
+            "lightness": "30"
+        }
+    ]
+},
+{
+    "featureType": "road.local",
+    "elementType": "all",
+    "stylers": [
+        {
+            "lightness": "40"
+        }
+    ]
+},
+{
+    "featureType": "transit",
+    "elementType": "all",
+    "stylers": [
+        {
+            "saturation": -100
+        },
+        {
+            "visibility": "simplified"
+        }
+    ]
+},
+{
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+        {
+            "hue": "#ffff00"
+        },
+        {
+            "lightness": -25
+        },
+        {
+            "saturation": -97
+        }
+    ]
+},
+{
+    "featureType": "water",
+    "elementType": "labels",
+    "stylers": [
+        {
+            "lightness": -25
+        },
+        {
+            "saturation": -100
+        }
+    ]
+},
+  {
+    featureType: "poi", // Ocultar puntos de interés
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "transit", // Ocultar estaciones de tránsito
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "administrative", // Ocultar nombres de lugares administrativos
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "landscape", // Ocultar etiquetas de paisajes
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  }
+];
 
 //createDatatable()
 
@@ -81,8 +227,8 @@ function initializeReference() {
 
   var mapProp = {
     center: new google.maps.LatLng(latitude, longitude),
-    zoom: 16,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    zoom: 14,
+    mapTypeId: "terrain"
   };
   // Agregando el mapa al tag de id googleMap
   var map = new google.maps.Map(document.getElementById("googleMapReference"), mapProp);
@@ -164,12 +310,28 @@ function initialize() {
   
  
   var myOptions = {
-    zoom: 16,
+    zoom: 14,
     center: myLatlng,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: "terrain",
+    styles: mapStyles
   }
 
   map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+
+  db.collection("sectors").get().then(snapshot =>{
+      snapshot.forEach(query => {
+        // Construct the polygon.
+        const polygon = new google.maps.Polygon({
+          paths: query.data().shapes,
+          strokeColor: query.data().color,
+          strokeOpacity: 0.8,
+          strokeWeight: 0,
+          fillColor: query.data().color,
+          fillOpacity: 0.35,
+        });
+        polygon.setMap(map);      
+      });
+  })
 
   drawingManager = new google.maps.drawing.DrawingManager({
     drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -219,12 +381,28 @@ function overlayClickListener(overlay) {
         myLatlng = new google.maps.LatLng(-12.5746489620646, -69.16789782379598);
     }
     var myOptions = {
-        zoom: 16,
+        zoom: 14,
         center: myLatlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: "terrain",
+        styles: mapStyles
       }
       map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
       drawingManager.setMap(map);
+      db.collection("sectors").get().then(snapshot =>{
+        snapshot.forEach(query => {
+          // Construct the polygon.
+          const polygon = new google.maps.Polygon({
+            paths: query.data().shapes,
+            strokeColor: query.data().color,
+            strokeOpacity: 0.8,
+            strokeWeight: 0,
+            fillColor: query.data().color,
+            fillOpacity: 0.35,
+          });
+          polygon.setMap(map);      
+        });
+    })
+  
       vertices = ""
       init()
       document.getElementById("label").value = ""
@@ -293,6 +471,7 @@ function overlayClickListener(overlay) {
 function init() {
 
   let ctx = 0
+  document.getElementById("tbodySector").innerHTML = ""
 
   var infowindow = new google.maps.InfoWindow({
     size: new google.maps.Size(150, 50)
@@ -314,10 +493,11 @@ function init() {
        longitude = -69.16789782379598
     }
 
-    const map = new google.maps.Map(document.getElementById("mapa"), {
+    mapPoly = new google.maps.Map(document.getElementById("mapa"), {
       zoom: 15,
       center: { lat: latitude, lng: longitude },
       mapTypeId: "terrain",
+      styles: mapStyles
     });
 
     snapshot.forEach(query => {
@@ -328,7 +508,7 @@ function init() {
         paths: query.data().shapes,
         strokeColor: query.data().color,
         strokeOpacity: 0.8,
-        strokeWeight: 2,
+        strokeWeight: 0,
         fillColor: query.data().color,
         fillOpacity: 0.35,
       });
@@ -349,13 +529,58 @@ function init() {
       google.maps.event.addListener(polygon, "mouseover", function(event) {   
         infowindow.setContent("<br><b>"+query.data().label+"</b><br>");
         infowindow.setPosition(event.latLng);
-        infowindow.open(map);
+        infowindow.open(mapPoly);
       });
     
-      polygon.setMap(map);
-          
+      polygon.setMap(mapPoly);      
     });
   })
+
+}
+
+function showMicroR(){
+  if(polylines.length === 0){
+    drawRoutes()
+  }else{
+    removeRoutes()
+  }
+}
+
+function drawRoutes() {
+  document.getElementById("labelRoute").innerHTML = "Ocultar rutas"
+  document.getElementById("btnShowR").style = "background-color: rgb(0, 0, 0);"
+  // Obtener los datos de Firestore y dibujar las líneas
+  db.collection('microroutes').get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const positions = data.positions.map(position => ({
+        lat: position.lat,
+        lng: position.lng
+      }));
+
+      const routePath = new google.maps.Polyline({
+        path: positions,
+        geodesic: true,
+        strokeColor: data.color || '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+      // Añadir la polyline al mapa y al array de polylines
+      routePath.setMap(mapPoly);
+      polylines.push(routePath);
+    });
+  });
+}
+
+function removeRoutes() {
+  document.getElementById("labelRoute").innerHTML = "Ver rutas"
+  document.getElementById("btnShowR").style = "background-color: rgb(53, 3, 94);"
+  // Eliminar cada polyline del mapa y vaciar el array de polylines
+  polylines.forEach((polyline) => {
+    polyline.setMap(null);
+  });
+  polylines = []; // Vaciar el array
 }
 
 $("#shapes").on("change", function () {
@@ -384,9 +609,10 @@ function selectArea(label) {
     }
 
     const map = new google.maps.Map(document.getElementById("map-canvas-2"), {
-      zoom: 16,
+      zoom: 13,
       center: { lat: latitude, lng: longitude},
       mapTypeId: "terrain",
+      styles: mapStyles
     });
 
     snapshot.forEach(query => {
@@ -394,10 +620,10 @@ function selectArea(label) {
       // Construct the polygon.
       const polygon = new google.maps.Polygon({
         paths: query.data().shapes,
-        strokeColor: "#5bbd00",
+        strokeColor: query.data().color,
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: "#5bbd00",
+        fillColor: query.data().color,
         fillOpacity: 0.35,
       });
 
@@ -507,11 +733,12 @@ function printSector(){
   var mapElement = document.getElementById("mapa");
 
   html2canvas(mapElement, {
-    useCORS: true, // Permite CORS para la captura
+    useCORS: true,
+    scale: 3  // Permite CORS para la captura
   }).then(canvas => {
-    html2canvas(document.querySelector("#tb-data-sector")).then(canvas2 => {
+    html2canvas(document.querySelector("#tb-data-sector"),{scale: 3}).then(canvas2 => {
     //document.body.appendChild(canvas)
-    var pdf = new jspdf.jsPDF()
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
   
     pdf.setFontSize(18)
     pdf.text(30, 16, "TrashCar Location System Monitoring")
