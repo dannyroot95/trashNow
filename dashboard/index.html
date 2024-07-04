@@ -7,6 +7,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TrashCar</title>
   <!-- INSERTING JQUERY -->
+   <script>
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    var letteruser = "";
+
+    if (localStorage.getItem("user") !== null) {
+      if (user != null && user != "" && user != undefined) {
+        let nameuser = user.name;
+        var typeuser = "";
+        if (user.type == "super_admin") {
+          typeuser = "Super Administrador";
+        } else if (user.type == "admin") {
+          typeuser = "Administrador";
+        } else if (user.type == "operator") {
+          typeuser = "Operador";
+        }
+      
+      } else {
+        window.location.href = "../../index.html";
+      }
+    } else {
+      window.location.href = "../../index.html";
+    }
+
+   </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" charset="utf-8"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>

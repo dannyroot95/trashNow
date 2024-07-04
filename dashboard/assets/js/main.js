@@ -1,25 +1,3 @@
-const user = JSON.parse(localStorage.getItem("user"));
-var letteruser = "";
-
-if (localStorage.getItem("user") !== null) {
-  if (user != null && user != "" && user != undefined) {
-    let nameuser = user.name;
-    var typeuser = "";
-    if (user.type == "super_admin") {
-      typeuser = "Super Administrador";
-    } else if (user.type == "admin") {
-      typeuser = "Administrador";
-    } else if (user.type == "operator") {
-      typeuser = "Operador";
-    }
-  
-  } else {
-    window.location.href = "../../index.html";
-  }
-} else {
-  window.location.href = "../../index.html";
-}
-
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("reference");

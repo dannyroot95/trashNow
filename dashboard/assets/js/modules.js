@@ -375,5 +375,13 @@ linkModulo.forEach((elemento) => {
     }
   });
 });
+getReference()
 
-
+function getReference(){
+  db.collection("reference").doc("point").get().then(ref =>{
+    if(ref.exists){
+      let x = {lat:ref.data().lat,lng:ref.data().lng,zoom:ref.data().zoom}
+      localStorage.setItem("reference",JSON.stringify(x))
+    }
+})
+}
